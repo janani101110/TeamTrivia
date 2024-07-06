@@ -14,7 +14,7 @@ const verifyToken = async (req, res, next) => {
   try{
     const {_id} = jwt.verify(token,process.env.accessToken_secret)
 
-    req.user = await User.findOne({_id}).select('_id')
+    req.user = await User.findOne({_id})
     next()
 
   }catch(error){

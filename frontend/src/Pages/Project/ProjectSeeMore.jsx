@@ -1,10 +1,13 @@
 import React, { useState, useRef } from "react";
 import "./ProjectSeeMore.css";
 import axios from "axios";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams,useNavigate, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import { URL } from "../../url";
+import { useUsers } from "../../Context/UserContext";
 import ProjectCard from "./ProjectCard";
+import { ProjectComment } from "./ProjectComment";
+import Alert from "../../Component/Alert/Alert";
 // import { Element, scroller } from 'react-scroll';
 // import ScrollAnimation from "react-animate-on-scroll";
 // import "animate.css/animate.min.css";
@@ -19,6 +22,13 @@ export const ProjectSeeMore = () => {
   const [page, setPage] = useState(1); // State to keep track of the current page
   const containerRef = useRef(null); // Reference to the container
   const wrapperRef = useRef(null); // Reference to the wrapper
+
+  const [comments, setComments] = useState([]);
+  const [comment, setComment] = useState("");
+  const [showAlert, setShowAlert] = useState(false);
+  const { user } = useUsers();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     AOS.refreshHard(); // Refresh AOS on component mount/update
@@ -91,6 +101,51 @@ export const ProjectSeeMore = () => {
 
   // Use a unique key to ensure the video element is re-rendered
   const videoKey = projectpost.project_video + new Date().getTime();
+
+  const fetchProjectComments = async () => {
+    try {
+      const res = await axios.get(`${URL}/api/projectComments/post/${id}`);
+      setComments(res.data);
+    } catch (err) {
+      console.error("Error fetching blog comments:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchProPost();
+    fetchProjectComments();
+  }, [id]);
+
+  const postComment = async (e) => {
+    e.preventDefault();
+    if (user) {
+      try {
+        await axios.post(
+          `${URL}/api/projectComments/create`,
+          { comment, postId: id, postedBy: user._id },
+          { withCredentials: true }
+        );
+        fetchProjectComments();
+        setComment("");
+      } catch (err) {
+        console.error("Error posting comment:", err);
+      }
+    } else {
+      setShowAlert(true);
+    }
+  };
+
+  const handleAlertClose = () => {
+    const scrollPosition = window.scrollY;
+    setShowAlert(false);
+    navigate("/login", { state: {  from: location, scrollPosition } });
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      postComment(e);
+    }
+  };
 
   return (
     <div className="project_seemore_container" data-aos="fade-up">
@@ -196,6 +251,43 @@ export const ProjectSeeMore = () => {
           {projectpost.git_link}
         </a>
       </div>
+      <br></br>
+      <br></br>
+
+
+            {/* Project comments section */}
+              <div className="ProjectComments">
+        <div className="projectCommentTitle"> Comments</div>
+        <div className="insideProjectComment">
+          <div className="flex flex-col space-y-5">
+            <input
+              type="text"
+              placeholder="Enter Your Thoughts !"
+              className="ProjectCommentTextArea"
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              onKeyDown={handleKeyDown}
+              required
+            />
+          </div>
+          {showAlert && (
+            <Alert
+              message="Please login to comment"
+              onClose={handleAlertClose}
+            />
+          )}
+        </div>
+        <div className="blog-comments-section">
+  {Array.isArray(comments) && comments.length > 0 ? (
+    comments.map((c) => (
+      <ProjectComment key={c._id} c={c} fetchProjectComments={fetchProjectComments} />
+    ))
+  ) : (
+    <p>No comments to display.</p>
+  )}
+</div>
+      </div>
+
       <br></br>
       <br></br>
       <hr className="project_line" data-aos="fade-up"></hr>

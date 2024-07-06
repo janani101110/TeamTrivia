@@ -3,8 +3,6 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import LoginImage from "../LogIn/images/loginImage.jpg";
 import GoogleIcon from "../LogIn/images/googleIcon.png";
-import CIcon from "@coreui/icons-react";
-import * as icon from "@coreui/icons";
 import "./LogIn.css";
 
 function Login() {

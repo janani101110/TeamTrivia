@@ -113,7 +113,7 @@ router.get("/", async (req, res) => {
     };
     // Retrieving all posts, filtered by the search query if present
     const posts = await Post.find(query.search ? searchFilter : null);
-    console.log("Filtered posts:", posts); // Debug: Log the filtered posts
+  // Debug: Log the filtered posts
     // Sending a success response with the retrieved posts
     res.status(200).json(posts);
   } catch (err) {

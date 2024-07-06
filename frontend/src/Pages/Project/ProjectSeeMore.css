@@ -136,3 +136,62 @@ html {
   max-width: 350px; /* Fixed width for each project card */
   margin-right: 20px; /* Space between items */
 }
+
+
+/* Project Comment Section */
+/* ProjectComments container */
+.ProjectComments {
+  margin-top: 20px; /* Adjust margin as needed */
+}
+
+/* Title styling */
+.projectCommentTitle {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+/* Inside comment section */
+.insideProjectComment {
+  margin-top: 10px; /* Adjust margin as needed */
+}
+
+/* Input field for comments */
+.ProjectCommentTextArea {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+/* Alert message style */
+.Alert {
+  /* Define your alert styling here */
+}
+
+/* Media queries for responsiveness */
+@media screen and (max-width: 1200px) {
+  .ProjectComments {
+    /* Adjust styles for 1200px viewport width */
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .projectCommentTitle {
+    font-size: 20px; /* Example of font-size adjustment for 768px */
+  }
+  .ProjectCommentTextArea {
+    font-size: 14px; /* Example of font-size adjustment for 768px */
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .projectCommentTitle {
+    font-size: 18px; /* Example of font-size adjustment for 480px */
+  }
+  .ProjectCommentTextArea {
+    font-size: 12px; /* Example of font-size adjustment for 480px */
+  }
+}

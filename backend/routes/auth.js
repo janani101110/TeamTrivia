@@ -64,7 +64,7 @@ router.get("/login/profile",verifyToken, (req, res) =>{
 });
 
 
-//Login Route
+//Login Router
 router.post('/login',async function(req, res){
   try{
     const user=await User.findOne({email:req.body.email})
