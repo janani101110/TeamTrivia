@@ -5,11 +5,6 @@ import axios from "axios";
 import { URL } from "../../url";
 import AdminNavi from "./AdminNavi";
 import "./ViewProjectAdmin.css";
-import ReactQuill from "react-quill"; // Import ReactQuill for rendering
-import "./ViewProjectAdmin.css";
-
-import AOS from "aos";
-import "aos/dist/aos.css";
 
 const ViewResourceAdmin = () => {
   const { id } = useParams();
@@ -17,9 +12,8 @@ const ViewResourceAdmin = () => {
   const [resoPost, setResoPost] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    AOS.refreshHard(); // Refresh AOS on component mount/update
-  }, [resoPost]);
+  const [showModal, setShowModal] = useState(false);
+  const [rejectionReason, setRejectionReason] = useState("");
 
   const fetchResoPost = async () => {
     try {
@@ -36,31 +30,22 @@ const ViewResourceAdmin = () => {
     fetchResoPost();
   }, [id]);
 
-  const fetchUserProfile = async (userId) => {
-    try {
-      const res = await axios.get(`http://localhost:5000/api/users/${userId}`);
-      return res.data; // Assuming res.data contains { username, email, ... }
-    } catch (err) {
-      console.error(`Error fetching user profile for user ${userId}:`, err);
-      return null;
-    }
-  };
-
   const handleApproval = async (approvedStatus) => {
-    const confirmMessage = `Are you sure you want to ${
-      approvedStatus ? "approve" : "reject"
-    } this resource?`;
+    if (!approvedStatus) {
+      setShowModal(true);
+      return;
+    }
+  
+    const confirmMessage = `Are you sure you want to approve this resource?`;
     const isConfirmed = window.confirm(confirmMessage);
-
+  
     if (!isConfirmed) {
       return; // User clicked "Cancel", stop further execution
     }
-
+  
     try {
-      const url = `${URL}/api/resoposts/${
-        approvedStatus ? "approve" : "reject"
-      }/${id}`;
-      await axios.put(url);
+      const url = `${URL}/api/resoposts/${approvedStatus ? 'approve' : 'reject'}/${id}`;
+      await axios.put(url, approvedStatus ? {} : { reason: rejectionReason });
       await sendNotification(approvedStatus);
       navigate("/admin");
     } catch (err) {
@@ -134,38 +119,59 @@ const ViewResourceAdmin = () => {
     return <div>Error loading resource post</div>;
   }
 
+  const handleReject = () => {
+    setShowModal(true);
+  };
+
+  const submitRejection = async () => {
+    try {
+      const url = `${URL}/api/resoposts/reject/${id}`;
+      await axios.put(url, { reason: rejectionReason });
+      await sendNotification(false);
+      setShowModal(false);
+      navigate("/admin");
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <div>
       <AdminNavi />
       <div className="admin_content">
-        <div className="project_seemore_container" data-aos="fade-up">
-          <h1 className="resource_title" data-aos="fade-up">{resoPost.title}</h1>
+        <div className="resource_seemore_container" data-aos="fade-up">
+          <h1 className="resource_title">{resoPost.title}</h1>
           <hr className="resource_line" />
-          <div className="resource_inline_user" data-aos="fade-up">
+          <br />
+          <div className="resource_inline_user">
+            <br />
             <div className="resopost-image" data-aos="fade-up">
-            <p className="resource_figure" data-aos="fade-up"> <strong>Image:</strong></p>
               <img src={resoPost.photo} alt={resoPost.title} width={600} />
+              <p className="resource_figure">Image</p>
             </div>
           </div>
           <br />
           <div data-aos="fade-up">
-            <p className="resource_head" data-aos="fade-up"><strong>Explanation of the resource:</strong></p>
-           
-            <ReactQuill value={resoPost.desc} readOnly={true} theme="bubble" />
-          
-            <p data-aos="fade-up"><strong>Category:</strong></p>
-            <div className="reso-post-categories" data-aos="fade-up">
+            <p className="resource_head">Explanation of the resource:</p>
             <br />
-            <div data-aos="fade-up">
-              {resoPost.categories?.map((c, i) => (
-                <div key={i}>{c}</div>
-              ))}
-            </div>
-      </div>
+            <p className="resource_describe">{resoPost.desc}</p>
           </div>
           <br />
           <br />
-          <div className="button_flex" data-aos="fade-up">{renderButtons()}</div>
+          <div className="button_flex">{renderButtons()}</div>
+          {showModal && (
+            <div className="modal">
+              <h2>Reason to reject</h2>
+              <textarea
+                value={rejectionReason}
+                onChange={(e) => setRejectionReason(e.target.value)}
+                placeholder="Provide the reason for rejection"
+              />
+              <button onClick={submitRejection}>Submit</button>
+              <button onClick={() => setShowModal(false)}>Cancel</button>
+            </div>
+          )}
+
         </div>
       </div>
     </div>

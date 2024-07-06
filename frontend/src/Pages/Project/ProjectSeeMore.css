@@ -87,13 +87,6 @@ html {
   font-size: large;
   text-align: justify;
   white-space: pre-line;
-
-  white-space: normal; /* Allow text to wrap */
-  overflow: hidden; /* Ensure the text is contained */
-  text-overflow: ellipsis; /* Add ellipsis for overflowing text */
-  display: -webkit-box; /* Fallback for older browsers */
- /* -webkit-line-clamp: 3;*/ /* Limit to 3 lines */
-  -webkit-box-orient: vertical; /* Vertical text orientation */
 }
 
 .project_github {
@@ -123,16 +116,26 @@ html {
 
 /* Wrapper for the scrolling content */
 .related_projects_wrapper {
- /* display: inline-block; /* Allow inline scrolling 
-  white-space: nowrap;*/ /* Prevent line breaks */
-  display: flex; /* Use flexbox for layout */
-  flex-wrap: nowrap; /* Prevent line breaks */
+  display: inline-block; /* Allow inline scrolling */
+  white-space: nowrap; /* Prevent line breaks */
   animation: scroll-left 20s linear infinite; /* Apply the scrolling animation */
 }
 
+/* Keyframes for the scrolling animation */
+@keyframes scroll-left {
+  0% {
+    transform: translateX(100%); /* Start at the right */
+  }
+  100% {
+    transform: translateX(-100%); /* End at the left */
+  }
+}
 
-/* Project Comment Section */
-/* ProjectComments container */
+.related_project_item {
+  display: inline-block; /* Inline block items */
+  max-width: 350px; /* Fixed width for each project card */
+  margin-right: 20px; /* Space between items */
+}
 .ProjectComments {
   margin-top: 20px; /* Adjust margin as needed */
 }

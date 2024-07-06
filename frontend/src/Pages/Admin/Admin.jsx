@@ -12,7 +12,7 @@ import useIncrementingCount from "./useIncrementingCount"; // Import the custom 
 // scroll
 import AOS from "aos";
 import "aos/dist/aos.css";
-
+ 
 export const Admin = () => {
   const [projectCounts, setProjectCounts] = useState({
     pending: 0,
@@ -27,13 +27,25 @@ export const Admin = () => {
   });
 
   // count increment effect
-  const animatedPendingProjectCount = useIncrementingCount(projectCounts.pending);
-  const animatedApprovedProjectCount = useIncrementingCount(projectCounts.approved);
-  const animatedRejectedProjectCount = useIncrementingCount(projectCounts.rejected);
+  const animatedPendingProjectCount = useIncrementingCount(
+    projectCounts.pending
+  );
+  const animatedApprovedProjectCount = useIncrementingCount(
+    projectCounts.approved
+  );
+  const animatedRejectedProjectCount = useIncrementingCount(
+    projectCounts.rejected
+  );
 
-  const animatedPendingResourceCount = useIncrementingCount(resourceCounts.pending);
-  const animatedApprovedResourceCount = useIncrementingCount(resourceCounts.approved);
-  const animatedRejectedResourceCount = useIncrementingCount(resourceCounts.rejected);
+  const animatedPendingResourceCount = useIncrementingCount(
+    resourceCounts.pending
+  );
+  const animatedApprovedResourceCount = useIncrementingCount(
+    resourceCounts.approved
+  );
+  const animatedRejectedResourceCount = useIncrementingCount(
+    resourceCounts.rejected
+  );
 
   const totalPendingCount = projectCounts.pending + resourceCounts.pending;
 
@@ -43,8 +55,15 @@ export const Admin = () => {
 
   return (
     <div data-aos="fade-up">
-      <AdminNavi totalPendingCount={totalPendingCount} />
-      <PostCounts setProjectCounts={setProjectCounts} setResourceCounts={setResourceCounts} />
+      <AdminNavi
+        totalPendingCount={totalPendingCount}
+        projectCounts={projectCounts}
+        resourceCounts={resourceCounts}
+      />
+      <PostCounts
+        setProjectCounts={setProjectCounts}
+        setResourceCounts={setResourceCounts}
+      />
       <div className="admin_content">
         <div className="admin_griditem1">Projects</div>
         <div className="admin_griditem2">
@@ -71,19 +90,22 @@ export const Admin = () => {
         <div className="admin_griditem3">Resources</div>
         <div className="admin_griditem4">
           <Link to={"/resourcesadmin/pending"}>
-            <div className="admin_box">Pending Resources <br></br>
-            <p className="countstyle">{animatedPendingResourceCount} </p>
+          <div className="admin_box">
+              Pending Resources <br></br>
+              <p className="countstyle">{animatedPendingResourceCount} </p>
             </div>
           </Link>
           <Link to={"/resourcesadmin/approved"}>
-            <div className="admin_box">Approved resources<br></br>
-            <p className="countstyle">{animatedApprovedResourceCount}</p>
+          <div className="admin_box">
+              Approved resources<br></br>
+              <p className="countstyle">{animatedApprovedResourceCount}</p>
             </div>
           </Link>
           <Link to={"/resourcesadmin/rejected"}>
             {" "}
-            <div className="admin_box">Rejected resources<br></br>
-            <p className="countstyle">{animatedRejectedResourceCount}</p>
+            <div className="admin_box">
+              Rejected resources<br></br>
+              <p className="countstyle">{animatedRejectedResourceCount}</p>
             </div>
           </Link>
         </div>

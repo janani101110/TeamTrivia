@@ -49,7 +49,7 @@ const MyCollections = () => {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
-        
+
         setShopposts(data); // Update shopPosts state with fetched data
       } catch (err) {
         console.error('Error fetching shop posts:', err);
@@ -106,7 +106,7 @@ const MyCollections = () => {
     try {
       await axios.delete(`http://localhost:5000/api/Shoppost/${shoppostId}`);
       setShopposts((prevShopposts) => prevShopposts.filter((shoppost) => shoppost._id !== shoppostId));
-      console.log("Shop post deleted:", shoppostId); 
+      console.log("Shop post deleted:", shoppostId);
     } catch (err) {
       console.error("Error deleting shop post:", err);
     }
@@ -122,10 +122,10 @@ const MyCollections = () => {
     }
   };
 
-  const handleProjectDelete = async (projectpost) => {
+  const handleProjectDelete = async (projectpostId) => {
     try {
-      await axios.delete(`http://localhost:5000/api/projectposts/${projectpost._id}`);
-      setProjectPosts((prevPosts) => prevPosts.filter((projectpost) => projectpost._id !== projectpost._id));
+      await axios.delete(`http://localhost:5000/api/projectposts/${projectpostId}`);
+      setProjectPosts((prevPosts) => prevPosts.filter((projectpost) => projectpost._id !== projectpostId));
     } catch (err) {
       console.error("Error deleting project post:", err);
     }
@@ -176,7 +176,103 @@ const MyCollections = () => {
       </div>
 
       <hr />
+      <div className="mySaveBookMarksresoDiv">
+        <div className="mySaveBookMarksresoSubDiv">
+          <div className="mySaveTags">
+            Resources
+            {"   "}
+            <button onClick={handleToggleResoGrid} className="toggleButton">
+              {showResoGrid ? (
+                <CIcon
+                  icon={icon.cilCaretTop}
+                  size=""
+                  style={{ "--ci-primary-color": "black" }}
+                  className="dropdownIcon"
+                />
+              ) : (
+                <CIcon
+                  icon={icon.cilCaretBottom}
+                  size=""
+                  style={{ "--ci-primary-color": "black" }}
+                  className="dropdownIcon"
+                />
+              )}
+            </button>
+          </div>
+          <p className="UserCount">
+            {" "}
+            No of Resources: {"   "} {resoPosts.length}{" "}
+          </p>
+        </div>
 
+        {resoPosts.length === 0 ? (
+          <p>No saved resource posts found.</p>
+        ) : (
+          <ul>
+            <PostList posts={showResoGrid ? resoPosts : resoPosts.slice(0, 3)} onDelete={handleResoDelete} />
+          </ul>
+        )}
+      </div>
+
+      <hr />
+
+
+
+      <div className="mySaveBookMarksproDiv">
+        <div className="mySaveBookMarksproSubDiv">
+          <div className="mySaveTags">
+            Projects
+            {"   "}
+            <button onClick={handleToggleProjectGrid} className="toggleButton">
+              {showProGrid ? (
+                <CIcon
+                  icon={icon.cilCaretTop}
+                  size=""
+                  style={{ "--ci-primary-color": "black" }}
+                  className="dropdownIcon"
+                />
+              ) : (
+                <CIcon
+                  icon={icon.cilCaretBottom}
+                  size=""
+                  style={{ "--ci-primary-color": "black" }}
+                  className="dropdownIcon"
+                />
+              )}
+            </button>
+          </div>
+          <p className="UserCount">
+            {" "}
+            No of Projects: {"   "} {projectPosts.length}{" "}
+          </p>
+        </div>
+
+        {projectPosts.length === 0 ? (
+          <p>No saved projects found.</p>
+        ) : (
+          <ul>
+            {showProGrid
+              ? projectPosts.map((projectpost) => (
+                <ProjectCard
+                  style={{ textDecoration: "none" }}
+                  key={projectpost._id}
+                  projectpost={projectpost}
+                  onDelete={handleProjectDelete}
+                />
+              ))
+              : projectPosts.slice(0, 3).map((projectpost) => (
+                <ProjectCard
+                  style={{ textDecoration: "none" }}
+                  key={projectpost._id}
+                  projectpost={projectpost}
+                  onDelete={handleProjectDelete}
+                />
+              ))}
+          </ul>
+        )}
+      </div>
+
+      <hr />
       <div className="mySaveBookMarksDiv">
         <div className="mySaveBookMarksSubDiv">
           <div className="mySaveTags">
@@ -289,102 +385,11 @@ const MyCollections = () => {
 
       </div>
 
-      <hr />
-      <div className="mySaveBookMarksresoDiv">
-      <div className="mySaveBookMarksresoSubDiv">
-        <div className="mySaveTags">
-          Resources
-          {"   "}
-          <button onClick={handleToggleResoGrid} className="toggleButton">
-            {showResoGrid ? (
-              <CIcon
-                icon={icon.cilCaretTop}
-                size=""
-                style={{ "--ci-primary-color": "black" }}
-                className="dropdownIcon"
-              />
-            ) : (
-              <CIcon
-                icon={icon.cilCaretBottom}
-                size=""
-                style={{ "--ci-primary-color": "black" }}
-                className="dropdownIcon"
-              />
-            )}
-          </button>
-        </div>
-        <p className="UserCount">
-          {" "}
-          No of Resources: {"   "} {resoPosts.length}{" "}
-        </p>
-      </div>
 
-      {resoPosts.length === 0 ? (
-        <p>No saved resource posts found.</p>
-      ) : (
-        <ul>
-          <PostList posts={showResoGrid ? resoPosts : resoPosts.slice(0, 3)} onDelete={handleResoDelete} />
-        </ul>
-      )}
+
+
+
     </div>
-
-<hr/>
-<div className="mySaveBookMarksproDiv">
-      <div className="mySaveBookMarksproSubDiv">
-        <div className="mySaveTags">
-          Projects
-          {"   "}
-          <button onClick={handleToggleProjectGrid} className="toggleButton">
-            {showProGrid ? (
-              <CIcon
-                icon={icon.cilCaretTop}
-                size=""
-                style={{ "--ci-primary-color": "black" }}
-                className="dropdownIcon"
-              />
-            ) : (
-              <CIcon
-                icon={icon.cilCaretBottom}
-                size=""
-                style={{ "--ci-primary-color": "black" }}
-                className="dropdownIcon"
-              />
-            )}
-          </button>
-        </div>
-        <p className="UserCount">
-          {" "}
-          No of Projects: {"   "} {projectPosts.length}{" "}
-        </p>
-      </div>
-
-      {projectPosts.length === 0 ? (
-        <p>No saved projects found.</p>
-      ) : (
-        <ul>
-          {showProGrid
-            ? projectPosts.map((projectpost) => (
-              <ProjectCard
-                style={{ textDecoration: "none" }}
-                key={projectpost._id}
-                projectpost={projectpost}
-                onDelete={handleProjectDelete}
-              />
-            ))
-            : projectPosts.slice(0, 3).map((projectpost) => (
-              <ProjectCard
-                style={{ textDecoration: "none" }}
-                key={projectpost._id}
-                projectpost={projectpost}
-                onDelete={handleProjectDelete}
-              />
-            ))}
-        </ul>
-      )}
-    </div>
-
-
-</div>
 
 
 

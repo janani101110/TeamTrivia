@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { imageDb } from "../../firebase";
 import { v4 as uuidv4 } from "uuid";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import editProfileImage from './Assets/editProfileImage.jpg'
+import editProfileImage from './Assets/editprofile.png'
 
 const EditProfile = () => {
   const { user } = useUsers();

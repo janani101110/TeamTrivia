@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import AdminNavi from "./AdminNavi";
@@ -66,6 +67,30 @@ const ResourcesAdmin = () => {
     }
   };
 
+  const handleDelete = async (resoPostId) => {
+    const confirmMessage = 'Are you sure you want to delete this resource post?';
+    const isConfirmed = window.confirm(confirmMessage);
+  
+    if (!isConfirmed) {
+      return;
+    }
+  
+    try {
+      await axios.delete(`${URL}/api/resoposts/${resoPostId}`);
+      // Update state after successful deletion
+      const updatedResourcePosts = resourcePosts.filter((post) => post._id !== resoPostId);
+      setResourcePosts(updatedResourcePosts);
+    } catch (error) {
+      console.error('Error deleting resource post:', error);
+      // Add console log for specific error response if needed
+      console.error('Error response data:', error.response?.data);
+      // Add console log for status code if needed
+      console.error('Error status code:', error.response?.status);
+      // Add any other relevant error logging here
+    }
+  };
+  
+
   return (
     <div data-aos="fade-up">
       <AdminNavi />
@@ -81,6 +106,8 @@ const ResourcesAdmin = () => {
               <th className="admin_th">Time</th>
               <th className="admin_th">Status</th>
               <th className="admin_th">View</th>
+              {status === "rejected" && <th className="admin_th">Actions</th>}
+
             </tr>
           </thead>
           <tbody>
@@ -98,6 +125,18 @@ const ResourcesAdmin = () => {
                     <button style={{borderRadius:"10px", color:"white", background:"rgb(95, 95, 228)", padding:"5px", cursor:"pointer"}}> See More </button>
                   </Link>
                 </td>
+
+                {status === "rejected" && (
+                  <td className="admin_td">
+                    <button
+                      style={{ borderRadius: "10px", color: "white", background: "red", padding: "5px", cursor: "pointer" }}
+                      onClick={() => handleDelete(resoPost._id)}
+                    >
+                      Delete
+                    </button>
+                  </td>
+                )}
+
               </tr>
             ))}
           </tbody>

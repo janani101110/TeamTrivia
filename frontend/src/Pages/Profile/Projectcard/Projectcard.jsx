@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "./Projectcard.css";
-import AnimatedHeart from "react-animated-heart";
+import { MdDelete } from "react-icons/md";
+
 import axios from "axios";
 //import ProjectSeeMore from "./ProjectSeeMore";
 import { URL } from "../../../url"; // Ensure this is correctly imported
@@ -9,13 +10,12 @@ import { useUsers } from "../../../Context/UserContext"; // Import user context
 import Alert from "../../../Component/Alert/Alert";
 import { useNavigate } from "react-router-dom"; 
 
-export const ProjectCard = ({ projectpost, page }) => {
+export const ProjectCard = ({ projectpost, page, onDelete }) => {
   // State to manage the click state and count for each project card for the current session
   const [isClick, setClick] = useState(false);
   const [likes, setLikes] = useState(projectpost.likes || 0);
    const { user } = useUsers(); // Access user data from context
-  const [showAlert, setShowAlert] = useState(false);
-  const [showLoginAlert, setShowLoginAlert] = useState(false); // State for login alert
+   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const navigate = useNavigate(); 
   const [liked, setLiked] = useState(false);
   const [author, setAuthor] = useState(null);
@@ -56,31 +56,22 @@ export const ProjectCard = ({ projectpost, page }) => {
     setLikes(projectpost.likes || 0);
   }, [projectpost.likes]);
 
-
-
-  const handleLike = async () => {
-    if (!user) {
-      setShowLoginAlert(true); // Show login alert if user is not logged in
-      return;
-    }
-    if (liked) return; // Prevent multiple likes
-    try {
-      const response = await axios.post(
-        `${URL}/api/projectposts/${projectpost._id}/like`,
-        { likes: 1},  // This payload should align with the server logic
-        { withCredentials: true }
-      );
-      setLikes(response.data.likes);
-      setLiked(true);
-    } catch (err) {
-      console.log(err);
-    }
+  const handleDelete = () => {
+    setShowDeleteAlert(true);
   };
   
-  const handleAlertCloselogin = () =>{
-    setShowLoginAlert(false); 
-    navigate('/login');
-  }
+
+  const handleAlertClose = () => {
+    
+      onDelete(projectpost._id);
+   
+    setShowDeleteAlert(false);
+  };
+
+
+
+  
+  
  
 
   return (
@@ -105,22 +96,33 @@ export const ProjectCard = ({ projectpost, page }) => {
               >
                 <button className="project_card__btn">Explore</button>
               </Link>
+              
             </div>
           </div>
+          <div className="post-status" style={{textAlign:'left'}}>
+        {projectpost.approved && !projectpost.rejected && <p>Status: Approved</p>}
+        {!projectpost.approved && projectpost.rejected && <p>Status: Rejected</p>}
+        {!projectpost.approved && !projectpost.rejected && <p>Status: Pending</p>}
+      </div>
+      <div className="pro-edit-delete-wrapper" style={{cursor:'pointer'}}>
+          <MdDelete className="pro-delete-icon" onClick={handleDelete} />
+        </div>
+        {showDeleteAlert && (
+        <Alert
+          message="Are you sure you want to delete this post?"
+          onClose={handleAlertClose}
+          
+        />
+      )}
 
           
         </div>
         <div className="project_last_line">
           <div className="project_heart">
             <ul>
+              
               <li>
-              {/*  <AnimatedHeart isClick={isClick} onClick={handleClick} />{" "} */}
-              {/* <AnimatedHeart isClick={liked} onClick={handleLike}  ></AnimatedHeart> */}
-
-              </li>
-              <br></br>
-              <li>
-                <p className="project_heart_line">{likes} Likes</p>
+                <p className="project_heart_line" style={{marginTop:'25px'}}>{likes} Likes</p>
               </li>
             </ul>
           </div>
@@ -149,12 +151,7 @@ export const ProjectCard = ({ projectpost, page }) => {
           </div>
         </div>
        
-           {showLoginAlert && (
-        <Alert
-          message="Please log in "
-          onClose={handleAlertCloselogin}
-        />
-      )}
+           
       </div>
     </div>
   );

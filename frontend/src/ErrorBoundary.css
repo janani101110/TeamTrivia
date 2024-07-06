@@ -14,8 +14,8 @@
   }
   
   .subErrorDiv img {
-    max-width:50%;
-    height: auto;
+    width: 500px;
+    height: fit-content;
   }
   
   .subErrorDiv h1 {

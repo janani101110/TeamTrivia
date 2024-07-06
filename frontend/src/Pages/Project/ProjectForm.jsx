@@ -83,12 +83,14 @@ export const ProjectForm = () => {
     e.preventDefault();
     setIsSubmit(true);
 
-    const errors = validateForm();
+    const errors = await validateForm();
     if (Object.keys(errors).length > 0) {
       setFormErrors(errors);
+      setIsSubmit(true);
       return;
     }
     setFormErrors({});
+    setIsSubmit(false);
     const projectPost = {
       name,
       email,
@@ -124,7 +126,7 @@ export const ProjectForm = () => {
     navigate('/project')
   }
 
-  const validateForm = () => {
+  const validateForm = async () => {
     const errors = {};
 
     if (!name.trim()) {
@@ -134,6 +136,11 @@ export const ProjectForm = () => {
       errors.email = "Email is required";
     } else if (!isValidEmail(email)) {
       errors.email = "Invalid email format";
+    } else {
+      const isEmailValid = await validateEmailWithHunter(email);
+      if (!isEmailValid) {
+        errors.email = "Email is not valid or deliverable";
+      }
     }
     if (!project_name.trim()) {
       errors.project_name = "Project name is required";
@@ -172,6 +179,18 @@ export const ProjectForm = () => {
   const isValidEmail = (email) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(email);
+  };
+  const validateEmailWithHunter = async (email) => {
+    const apiKey = '1390ced31cd81d4930ee925b145427b0d101c842';
+    const url = `https://api.hunter.io/v2/email-verifier?email=${email}&api_key=${apiKey}`;
+
+    try {
+      const response = await axios.get(url);
+      return response.data.data.result === 'deliverable';
+    } catch (error) {
+      console.error('Error validating email:', error);
+      return false;
+    }
   };
 
   return (
@@ -381,7 +400,7 @@ export const ProjectForm = () => {
               </button>
               {showAlert && (
             <Alert
-              message="Your resource is submitted for Admin approval."
+              message="Your project is submitted for Admin approval."
               onClose={handleAdminalert}
             />
           )}

@@ -119,9 +119,10 @@ router.put("/approve/:id", async (req, res) => {
 router.put("/reject/:id", async (req, res) => {
   try {
     const { id } = req.params;
+    const { reason } = req.body;
     const projectpost = await Projectpost.findByIdAndUpdate(
       id,
-      { rejected: true, approved: false }, // Set rejected to true
+      { rejected: true, approved: false, rejectionReason: reason  }, // Set rejected to true
       { new: true }
     );
     if (!projectpost) {
@@ -131,7 +132,7 @@ router.put("/reject/:id", async (req, res) => {
     const userEmail = projectpost.email; // Get the email from the project post document
 
     const emailSubject = 'Your project article has been rejected!';
-    const emailText = `Your project article "${projectpost.project_name}" has been rejected.`;
+    const emailText = `Your project article "${projectpost.project_name}" has been rejected for the following reason:\n\n${reason}.`;
 
     await sendEmail(userEmail, emailSubject, emailText);
 
@@ -141,7 +142,6 @@ router.put("/reject/:id", async (req, res) => {
     res.status(500).json(err);
   }
 });
-
 // Get all rejected project posts
 router.get("/rejected", async (req, res) => {
   try {
@@ -228,12 +228,17 @@ router.get("/", async (req, res) => {
 
 
 
-router.delete("/:id",async (req,res)=>{
-  try{
-    await Projectpost.findByIdAndDelete(req.params.id);
-    res.status(200).json("post has been deleted");
-  } catch(err){
-    res.status(500).json(err);
+router.delete("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deletedProject = await Projectpost.findByIdAndDelete(id);
+    if (!deletedProject) {
+      return res.status(404).json({ message: "Project post not found" });
+    }
+    res.status(200).json({ message: "Project deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting project:", error);
+    res.status(500).json({ error: "Failed to delete project" });
   }
 });
 

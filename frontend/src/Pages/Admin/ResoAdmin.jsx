@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import AdminNavi from "./AdminNavi";
@@ -72,6 +73,25 @@ const ResoAdmin = () => {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+  const handleDelete = async (resoPostId) => {
+    const confirmMessage = "Are you sure you want to delete this project?";
+    const isConfirmed = window.confirm(confirmMessage);
+
+    if (!isConfirmed) {
+      return;
+    }
+
+    try {
+      await axios.delete(`${URL}/api/resoposts/${resoPostId}`);
+      // Refresh the project list after deletion
+      const updatedResourcePosts = resourcePosts.filter((post) => post._id !== resoPostId);
+      setResourcePosts(updatedResourcePosts);
+    } catch (error) {
+      console.error("Error deleting resource post:", error);
+    }
+  };
+
+
   return (
     <div data-aos="fade-up">
       <AdminNavi />
@@ -104,6 +124,7 @@ const ResoAdmin = () => {
               <th className="proAdmin_th">Time</th>
               <th className="proAdmin_th">Status</th>
               <th className="proAdmin_th">View</th>
+              {selectedStatus === "rejected" && <th className="proAdmin_th">Actions</th>}
             </tr>
           </thead>
           <tbody>
@@ -141,6 +162,18 @@ const ResoAdmin = () => {
                     </button>
                   </Link>
                 </td>
+
+                {selectedStatus === "rejected" && (
+                  <td className="proAdmin_td">
+                    <button
+                      style={{borderRadius:"10px", color:"white", background:"red", padding:"5px", cursor:"pointer"}}
+                      onClick={() => handleDelete(resourcePost._id)}
+                    >
+                      Delete
+                    </button>
+                    </td>
+                )}
+
               </tr>
             ))}
           </tbody>

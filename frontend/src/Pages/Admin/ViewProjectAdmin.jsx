@@ -20,6 +20,9 @@ export const ViewProjectAdmin = () => {
   const containerRef = useRef(null); // Reference to the container
   const wrapperRef = useRef(null); // Reference to the wrapper
 
+  const [showModal, setShowModal] = useState(false);
+  const [rejectionReason, setRejectionReason] = useState("");
+
   useEffect(() => {
     AOS.refreshHard(); // Refresh AOS on component mount/update
   }, [projectPost]);
@@ -41,25 +44,29 @@ export const ViewProjectAdmin = () => {
   }, [id]);
 
   const handleApproval = async (approvedStatus) => {
-    const confirmMessage = `Are you sure you want to ${
-      approvedStatus ? "approve" : "reject"
-    } this project?`;
-    const isConfirmed = window.confirm(confirmMessage);
-
-    if (!isConfirmed) {
-      return; // User clicked "Cancel", stop further execution
-    }
-
-    try {
-      const url = `${URL}/api/projectposts/${
+    if (approvedStatus) {
+      const confirmMessage = `Are you sure you want to ${
         approvedStatus ? "approve" : "reject"
-      }/${id}`;
-      await axios.put(url);
-      await sendNotification(approvedStatus); // Send notification after approval
-      // alert(`${approvedStatus ? "Approved" : "Rejected"} this project`);
-      navigate("/admin");
-    } catch (err) {
-      console.log(err);
+      } this project?`;
+      const isConfirmed = window.confirm(confirmMessage);
+
+      if (!isConfirmed) {
+        return; // User clicked "Cancel", stop further execution
+      }
+
+      try {
+        const url = `${URL}/api/projectposts/${
+          approvedStatus ? "approve" : "reject"
+        }/${id}`;
+        await axios.put(url);
+        await sendNotification(approvedStatus); // Send notification after approval
+        // alert(`${approvedStatus ? "Approved" : "Rejected"} this project`);
+        navigate("/admin");
+      } catch (err) {
+        console.log(err);
+      }
+    } else {
+      setShowModal(true);
     }
   };
 
@@ -119,6 +126,7 @@ export const ViewProjectAdmin = () => {
 
 */
 
+
   const renderButtons = () => {
     if (!projectPost.approved && !projectPost.rejected) {
       return (
@@ -162,9 +170,39 @@ export const ViewProjectAdmin = () => {
     }
   };
 
-    // Use a unique key to ensure the video element is re-rendered
-    const videoKey = projectPost.project_video + new Date().getTime();
+  // Use a unique key to ensure the video element is re-rendered
+  const videoKey = projectPost.project_video + new Date().getTime();
 
+  const handleReject = () => {
+    setShowModal(true);
+  };
+
+ /* const submitRejection = () => {
+    axios
+      .post("/api/projects/reject", {
+        projectId: project._id,
+        reason: rejectionReason,
+      })
+      .then((response) => {
+        setShowModal(false);
+        // Handle successful rejection
+      })
+      .catch((error) => {
+        // Handle error
+      });
+  };*/
+
+  const submitRejection = async () => {
+    try {
+      const url = `${URL}/api/projectposts/reject/${id}`;
+      await axios.put(url, { reason: rejectionReason });
+      await sendNotification(false);
+      setShowModal(false);
+      navigate("/admin");
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <div>
@@ -226,21 +264,18 @@ export const ViewProjectAdmin = () => {
 <Link to={projectPost.project_video} >
   click mee
 </Link>*/}
-
- <div className="project_head" data-aos="fade-up">
-        Video explanation of the project
-      </div>
-      <br></br>
-      <div className="project_video" data-aos="fade-up">
-        <video key={videoKey} width="600" controls>
-          <source src={projectPost.project_video} type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
-        {/* <p className="project_figure">Video explanation of the project</p> */}
-      </div>
-      <br></br>
-
-      
+          <div className="project_head" data-aos="fade-up">
+            Video explanation of the project
+          </div>
+          <br></br>
+          <div className="project_video" data-aos="fade-up">
+            <video key={videoKey} width="600" controls>
+              <source src={projectPost.project_video} type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+            {/* <p className="project_figure">Video explanation of the project</p> */}
+          </div>
+          <br></br>
           <div data-aos="fade-up">
             <p className="project_head">Explanation of the project:</p>
             <br></br>
@@ -261,31 +296,32 @@ export const ViewProjectAdmin = () => {
         <img src={projectPost.pcb_design} alt="ProjectImage" width={600}></img>
         <p className="project_figure">PCB Design</p>
       </div> */}
-
-<div className="project_head" data-aos="fade-up">
-        Circuit Diagram
-      </div>
-      <br></br>
-      <div className="project_image">
-        <img
-          src={projectPost.circuit_diagram}
-          alt="Project Image"
-          width={600}
-        ></img>
-        {/*  <p className="project_figure">Circuit Diagram</p> */}
-      </div>
-      <br></br>
-
-      <div className="project_head" data-aos="fade-up">
-        PCB Design
-      </div>
-      <br></br>
-      <div className="project_image">
-        <img src={projectPost.pcb_design} alt="Project Image" width={600}></img>
-        {/* <p className="project_figure">PCB Design</p>*/}
-      </div>
-      <br></br>
-
+          <div className="project_head" data-aos="fade-up">
+            Circuit Diagram
+          </div>
+          <br></br>
+          <div className="project_image">
+            <img
+              src={projectPost.circuit_diagram}
+              alt="Project Image"
+              width={600}
+            ></img>
+            {/*  <p className="project_figure">Circuit Diagram</p> */}
+          </div>
+          <br></br>
+          <div className="project_head" data-aos="fade-up">
+            PCB Design
+          </div>
+          <br></br>
+          <div className="project_image">
+            <img
+              src={projectPost.pcb_design}
+              alt="Project Image"
+              width={600}
+            ></img>
+            {/* <p className="project_figure">PCB Design</p>*/}
+          </div>
+          <br></br>
           <div data-aos="fade-up">
             <p className="project_head">
               Refer the code through this GitHub link:
@@ -303,8 +339,19 @@ export const ViewProjectAdmin = () => {
           </div>
           <br></br>
           <br></br>
-
           <div className="button_flex">{renderButtons()}</div>
+          {showModal && (
+            <div className="modal">
+              <h2>Reason to reject</h2>
+              <textarea
+                value={rejectionReason}
+                onChange={(e) => setRejectionReason(e.target.value)}
+                placeholder="Provide the reason for rejection"
+              />
+              <button onClick={submitRejection}>Submit</button>
+              <button onClick={() => setShowModal(false)}>Cancel</button>
+            </div>
+          )}
           <br></br>
         </div>
       </div>

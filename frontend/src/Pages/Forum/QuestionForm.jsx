@@ -148,7 +148,7 @@ const getToken = () => {
               </tr>
             </tbody>
           </table>
-          <button className='formsubmitbutton' type='submit'>Add Question</button>
+          <button className='formsubmitbutton' type='submit' style={{marginLeft:'600px'}}>Add Question</button>
         </form>
       </div>
     </div>

@@ -57,18 +57,51 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-// Route for deleting a post by its ID
-router.delete("/:id", async (req, res) => {
+// // Route for deleting a post by its ID
+// router.delete("/:id", async (req, res) => {
+//   try {
+//     // Finding and deleting the post by its ID
+//     await ResoPost.findByIdAndDelete(req.params.id);
+//     // Deleting associated comments with the deleted post
+//     await ResoComment.deleteMany({ postId: req.params.id });
+//     // Sending a success response after deleting the post
+//     res.status(200).json("Post has been deleted");
+//   } catch (err) {
+//     // Handling errors if any occur during the process
+//     res.status(500).json(err);
+//   }
+// });
+// Delete a resources post by its ID
+router.delete('/:id', async (req, res) => {
   try {
-    // Finding and deleting the post by its ID
-    await ResoPost.findByIdAndDelete(req.params.id);
-    // Deleting associated comments with the deleted post
-    await ResoComment.deleteMany({ postId: req.params.id });
-    // Sending a success response after deleting the post
-    res.status(200).json("Post has been deleted");
-  } catch (err) {
-    // Handling errors if any occur during the process
-    res.status(500).json(err);
+    const { id } = req.params;
+
+    // Find the resource post by its ID
+    const deletedPost = await ResoPost.findByIdAndDelete(id);
+    if (!deletedPost) {
+      return res.status(404).json({ message: 'Resource post not found' });
+    }
+
+    // Delete associated comments with the deleted post
+    await ResoComment.deleteMany({ postId: id });
+
+    // Fetch user details to get email
+    const user = await User.findById(deletedPost.postedBy);
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    // Sending email to the user (optional)
+    await sendEmail(
+      user.email,
+      'Post Deleted',
+      `Your post "${deletedPost.title}" has been deleted by the admin.`
+    );
+
+    res.status(200).json({ message: 'Resource post deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting resource post:', error);
+    res.status(500).json({ error: 'Failed to delete resource post' });
   }
 });
 
@@ -160,9 +193,10 @@ router.put("/approve/:id", async (req, res) => {
 router.put("/reject/:id", async (req, res) => {
   try {
     const { id } = req.params;
+    const { reason } = req.body;
     const post = await ResoPost.findByIdAndUpdate(
       id,
-      { rejected: true, approved: false }, // Set rejected to true
+      { rejected: true, approved: false, rejectionReason: reason  }, // Set rejected to true
       { new: true }
     );
 
@@ -180,7 +214,7 @@ router.put("/reject/:id", async (req, res) => {
     await sendEmail(
       user.email,
       "Post Rejected",
-      `Your post "${post.title}" has been rejected by the admin.`
+      `Your post "${post.title}" has been rejected for the following reason:\n\n${reason}.`
     );
 
     res.status(200).json(post);
@@ -189,7 +223,6 @@ router.put("/reject/:id", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
 
 // Get all rejected resources posts
 router.get("/rejected", async (req, res) => {

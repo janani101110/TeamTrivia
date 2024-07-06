@@ -1,8 +1,8 @@
 // ErrorBoundary.js
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-// import Error from './Assets/Error.jpg'
-import './ErrorBoundary.css'
+import Error from './Assets/Error.png';
+import './ErrorBoundary.css';
 
 class ErrorBoundary extends Component {
   constructor(props) {
@@ -24,7 +24,7 @@ class ErrorBoundary extends Component {
       return (
         <div className='MainErrorDiv'>
             <div className='subErrorDiv'>
-                {/* <img src={Error}/> */}
+                <img src={Error}/>
             </div>
             <div className='subErrorDiv'>
             <h1>Something went wrong.</h1>

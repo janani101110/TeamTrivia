@@ -49,6 +49,24 @@ const ProAdmin = () => {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+  const handleDelete = async (projectId) => {
+    const confirmMessage = "Are you sure you want to delete this project?";
+    const isConfirmed = window.confirm(confirmMessage);
+
+    if (!isConfirmed) {
+      return;
+    }
+
+    try {
+      await axios.delete(`${URL}/api/projectposts/${projectId}`);
+      // Refresh the project list after deletion
+      const updatedProjects = projectPosts.filter((project) => project._id !== projectId);
+      setProjectPosts(updatedProjects);
+    } catch (error) {
+      console.error("Error deleting project:", error);
+    }
+  };
+
   return (
     <div data-aos="fade-up">
       <AdminNavi />
@@ -81,6 +99,7 @@ const ProAdmin = () => {
               <th className="proAdmin_th">Time</th>
               <th className="proAdmin_th">Status</th>
               <th className="proAdmin_th">View</th>
+              {selectedStatus === "rejected" && <th className="proAdmin_th">Actions</th>}
             </tr>
           </thead>
           <tbody>
@@ -104,6 +123,18 @@ const ProAdmin = () => {
                   <button style={{borderRadius:"10px", color:"white", background:"rgb(95, 95, 228)", padding:"5px", cursor:"pointer"}}> See More </button>
                   </Link>
                 </td>
+
+                {selectedStatus === "rejected" && (
+                  <td className="proAdmin_td">
+                    <button
+                      style={{borderRadius:"10px", color:"white", background:"red", padding:"5px", cursor:"pointer"}}
+                      onClick={() => handleDelete(projectpost._id)}
+                    >
+                      Delete
+                    </button>
+                    </td>
+                )}
+                 
               </tr>
             ))}
           </tbody>

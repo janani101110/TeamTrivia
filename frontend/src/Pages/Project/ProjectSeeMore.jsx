@@ -98,6 +98,9 @@ export const ProjectSeeMore = () => {
 
   // Use a unique key to ensure the video element is re-rendered
   const videoKey = projectpost.project_video + new Date().getTime();
+  const filteredProjects = relatedProjects.filter(
+    (project) => project.name === projectpost.name && project.approved
+  );
 
   const fetchProjectComments = async () => {
     try {
@@ -253,7 +256,7 @@ export const ProjectSeeMore = () => {
 
 
             {/* Project comments section */}
-              <div className="ProjectComments">
+              <div className="ProjectComments" data-aos="fade-up">
         <div className="projectCommentTitle"> Comments</div>
         <div className="insideProjectComment">
           <div className="flex flex-col space-y-5">
@@ -303,16 +306,11 @@ export const ProjectSeeMore = () => {
             onMouseLeave={handleMouseLeave}
           >
             <div className="related_projects_grid">
-              {relatedProjects
-                .filter(
-                  (project) =>
-                    project.name === projectpost.name && project.approved
-                ) // Filter by user name and approval status
-                .map((project) => (
-                  <div className="related_project_item" key={project._id}>
-                    <ProjectCard projectpost={project} />
-                  </div>
-                ))}
+            {filteredProjects.map((project) => (
+                <div className="related_project_item" key={project._id}>
+                  <ProjectCard projectpost={project} />
+                </div>
+              ))}
             </div>
           </div>
         </div>

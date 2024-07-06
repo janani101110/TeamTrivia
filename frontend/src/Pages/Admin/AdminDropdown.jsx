@@ -20,9 +20,9 @@ const DropdownMenu = () => {
 
   return (
     <div className="dropdown-menu">
-      <ul className="dropdownMenuul">
+      <ul className="dropdownMenuul" style={{backgroundColor:"transparent", border:"none",boxShadow:"none"}}>
         <Link style={{ textDecoration: "none" }} to="#" onClick={logout}>
-          <li className="dropdownMenuli">Log Out</li>
+          <li className="dropdownMenuli" style={{backgroundColor:"black", color:"white"}}>Log Out</li>
         </Link>
       </ul>
     </div>

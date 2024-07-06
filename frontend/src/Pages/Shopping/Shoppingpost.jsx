@@ -24,6 +24,7 @@ export const Shoppingpost = () => {
   const [error, setError] = useState({ contact: "", email: "" });
   const [agree, setAgree] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
+  const [formError, setFormError] = useState("");
 
   useEffect(() => {
     if (user) {
@@ -43,49 +44,53 @@ export const Shoppingpost = () => {
 
     // Handling specific validations based on input name
     if (name === "contact") {
-        const NumberPattern = /^[0-9]{10}$/;
-        if (!NumberPattern.test(value)) {
-            setError(prevError => ({ ...prevError, contact: "Please enter a valid 10-digit phone number" }));
-        } else {
-            setError(prevError => ({ ...prevError, contact: "" }));
-        }
+      const NumberPattern = /^[0-9]{10}$/;
+      if (!NumberPattern.test(value)) {
+        setError(prevError => ({ ...prevError, contact: "Please enter a valid 10-digit phone number" }));
+      } else {
+        setError(prevError => ({ ...prevError, contact: "" }));
+      }
     }
 
     if (name === "userEmail") {
-        const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!isValidEmail.test(value)) {
-            setError(prevError => ({ ...prevError, email: "Please enter a valid email address" }));
-        } else {
-            setError(prevError => ({ ...prevError, email: "" }));
-        }
+      const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!isValidEmail.test(value)) {
+        setError(prevError => ({ ...prevError, email: "Please enter a valid email address" }));
+      } else {
+        setError(prevError => ({ ...prevError, email: "" }));
+      }
     }
 
     // Handling "price" input specifically for "Rs." prefix
     if (name === "price") {
-        if (!value.startsWith("Rs.")) {
-            setPrice("Rs." + value);  // Add "Rs." prefix and update state
-        } else {
-            setPrice(value);  // Update state with the current value (already prefixed)
-        }
+      if (!value.startsWith("Rs.")) {
+        setPrice("Rs." + value);  // Add "Rs." prefix and update state
+      } else {
+        setPrice(value);  // Update state with the current value (already prefixed)
+      }
     } else {
-        // For other input fields, update state normally
-        if (name === "name") setName(value);
-        if (name === "description") setDescription(value);
-        if (name === "contact") setContact(value);
-        if (name === "userEmail") setUserEmail(value);
+      // For other input fields, update state normally
+      if (name === "name") setName(value);
+      if (name === "description") setDescription(value);
+      if (name === "contact") setContact(value);
+      if (name === "userEmail") setUserEmail(value);
     }
-};
+  };
 
   const handleClick = async (event) => {
     event.preventDefault();
-    if (!agree) { 
-      setShowAlert(true);
-            return;
+    
+    if (!name || !description || !price || !contact || !photo || !userEmail || !agree) {
+      setFormError("All fields are required.");
+      return;
     }
+
     if (error.contact || error.email) {
       alert("Please correct the errors before submitting.");
       return;
     }
+
+    setFormError("");  // Clear any previous error message
 
     const imgRef = ref(imageDb, `shoppingimages/${v4()}`);
     let downloadURL = "";
@@ -116,9 +121,9 @@ export const Shoppingpost = () => {
       console.error("Error creating shop post:", error);
     }
   };
+
   const handleAlertClose = () => {
     setShowAlert(false);
-    
   };
 
   return (
@@ -151,6 +156,7 @@ export const Shoppingpost = () => {
               onClose={handleAlertClose}
             />
           )}
+          {formError && <p style={{ color: "red" }}>{formError}</p>}
           <table className="shoptable">
             <tbody>
               <tr className="shoprow">
@@ -160,6 +166,7 @@ export const Shoppingpost = () => {
                     type="file"
                     onChange={handlePhotoChange}
                     style={{ border: "none" }}
+                    required
                   />
                 </td>
               </tr>
@@ -172,6 +179,7 @@ export const Shoppingpost = () => {
                     value={name}
                     onChange={handleChange}
                     placeholder="Enter the component name with correct spellings"
+                    required
                   />
                 </td>
               </tr>
@@ -184,8 +192,7 @@ export const Shoppingpost = () => {
                     value={price}
                     onChange={handleChange}
                     placeholder="Rs."
-                    
-                    
+                    required
                   />
                 </td>
               </tr>
@@ -199,6 +206,7 @@ export const Shoppingpost = () => {
                     cols={50}
                     rows={18}
                     placeholder="Write a description about the component you wish to sell. Include all the necessary details including any constraints"
+                    required
                   />
                 </td>
               </tr>
@@ -211,6 +219,7 @@ export const Shoppingpost = () => {
                     value={contact}
                     onChange={handleChange}
                     placeholder="Enter a contact number containing 10 digits"
+                    required
                   />
                   {error.contact && <span style={{ color: "red" }}>{error.contact}</span>}
                 </td>
@@ -224,6 +233,7 @@ export const Shoppingpost = () => {
                     value={userEmail}
                     onChange={handleChange}
                     placeholder="This email will be used for communication purpose"
+                    required
                   />
                   {error.email && <span style={{ color: "red" }}>{error.email}</span>}
                 </td>

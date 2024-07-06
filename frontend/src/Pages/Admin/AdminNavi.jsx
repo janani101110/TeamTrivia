@@ -11,8 +11,8 @@ import { useUsers } from "../../Context/UserContext";
 import Gaveshalogo from './Assets/Gaveshalogo.png';
 
 
-export const AdminNavi = ({ totalPendingCount = 0 }) => {
-  const [isDropdownVisible, setDropdownVisible] = useState(false);
+export const AdminNavi = ({ totalPendingCount = 0, projectCounts = {}, resourceCounts = {} }) => {
+    const [isDropdownVisible, setDropdownVisible] = useState(false);
   const { user, fetchUsers } = useUsers();
   const location = useLocation();
   const [activeLink, setActiveLink] = useState(location.pathname);
@@ -49,8 +49,10 @@ export const AdminNavi = ({ totalPendingCount = 0 }) => {
               </a>
               <span className="admin_tooltip">Projects pending approval: {totalPendingCount}</span>
               <div className="admin_notification-box">
-                <p>You have {totalPendingCount} projects for pending approval.</p>
-                {/* Additional notification details can go here */}
+              <ul className="admin-list">
+              <li> <p>You have {projectCounts.pending || 0} projects for pending approval.</p></li> 
+              <li>  <p> You have {resourceCounts.pending || 0} resources for pending approval.</p></li>
+              </ul>
               </div>
             </li>
             <li>
@@ -73,7 +75,7 @@ export const AdminNavi = ({ totalPendingCount = 0 }) => {
         <div className="admin_sidebar-container">
           <div className="admin_nav-option">
           <li className={activeLink === '/admin' ? 'active' : ''}>
-          <Link to="/resoadmin" onClick={() => handleLinkClick('/resourcesadmin')}>           
+          <Link to="/admin" onClick={() => handleLinkClick('/admin')}>           
                <FontAwesomeIcon icon={faHome} /> Dashboard
               </Link>
             </li>
@@ -84,8 +86,8 @@ export const AdminNavi = ({ totalPendingCount = 0 }) => {
               </Link>
             </li>
 
-            <li className={activeLink === '/resourcesadmin' ? 'active' : ''}>
-              <Link to="/admin" onClick={() => handleLinkClick('/resourcesadmin')}>
+            <li className={activeLink === '/resoadmin' ? 'active' : ''}>
+              <Link to="/resoadmin" onClick={() => handleLinkClick('/resoadmin')}>
                 <FontAwesomeIcon icon={faBook} /> Resources
               </Link>
             </li>

@@ -1,3 +1,4 @@
+
 import React from "react";
 import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
@@ -52,6 +53,25 @@ const ProjectsAdmin = () => {
     }
   };
 
+  const handleDelete = async (projectId) => {
+    const confirmMessage = "Are you sure you want to delete this project?";
+    const isConfirmed = window.confirm(confirmMessage);
+  
+    if (!isConfirmed) {
+      return;
+    }
+  
+    try {
+      await axios.delete(`${URL}/api/projectposts/reject/${projectId}`);
+      // Refresh the project list after deletion
+      const updatedProjects = projectPosts.filter((project) => project._id !== projectId);
+      setProjectPosts(updatedProjects);
+    } catch (error) {
+      console.error("Error deleting project:", error);
+    }
+  };
+  
+
   return (
     <div data-aos="fade-up">
       <AdminNavi />
@@ -66,6 +86,7 @@ const ProjectsAdmin = () => {
               <th className="admin_th">Time</th>
               <th className="admin_th">Stauts</th>
               <th className="admin_th">View</th>
+              {status === "rejected" && <th className="admin_th">Actions</th>}
             </tr>
           </thead>
           <tbody>
@@ -91,6 +112,17 @@ const ProjectsAdmin = () => {
                   </Link>
                 </td>
             
+                {status === "rejected" && (
+                  <td className="admin_td">
+                    <button
+                      style={{ borderRadius: "10px", color: "white", background: "red", padding: "5px", cursor: "pointer" }}
+                      onClick={() => handleDelete(projectpost._id)}
+                    >
+                      Delete
+                    </button>
+                  </td>
+                )}
+
               </tr>
             ))}
           </tbody>
