@@ -35,7 +35,7 @@ export const Home = () => {
   };
 
   const handleExploreProjectsClick = () => {
-    navigate("/projects");
+    navigate("/project");
   };
 
   const handleExploreBlogsClick = () => {
