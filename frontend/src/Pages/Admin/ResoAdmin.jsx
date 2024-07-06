@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import AdminNavi from "./AdminNavi";
 import axios from "axios";
@@ -32,15 +32,38 @@ const ResoAdmin = () => {
   }, []);
 
   useEffect(() => {
-    const filteredResources = resourcePosts.filter((resourcePost) => {
-      if (selectedStatus === "pending") return !resourcePost.approved && !resourcePost.rejected;
-      if (selectedStatus === "approved") return resourcePost.approved;
-      if (selectedStatus === "rejected") return resourcePost.rejected;
-      return true;
-    });
-    setFilteredPosts(filteredResources);
-    setCurrentPage(1); // Reset to the first page whenever the status filter changes
+    const fetchFilteredResourcesWithUserProfiles = async () => {
+      const filteredResources = resourcePosts.filter((resourcePost) => {
+        if (selectedStatus === "pending") return !resourcePost.approved && !resourcePost.rejected;
+        if (selectedStatus === "approved") return resourcePost.approved;
+        if (selectedStatus === "rejected") return resourcePost.rejected;
+        return true;
+      });
+
+      // Fetch user profiles for each resource post
+      const postsWithUsers = await Promise.all(
+        filteredResources.map(async (resourcePost) => {
+          const userProfile = await fetchUserProfile(resourcePost.postedBy);
+          return { ...resourcePost, user: userProfile };
+        })
+      );
+
+      setFilteredPosts(postsWithUsers);
+      setCurrentPage(1); // Reset to the first page whenever the status filter changes
+    };
+
+    fetchFilteredResourcesWithUserProfiles();
   }, [selectedStatus, resourcePosts]);
+
+  const fetchUserProfile = async (userId) => {
+    try {
+      const res = await axios.get(`${URL}/api/users/${userId}`);
+      return res.data; // Assuming res.data contains { username, email, ... }
+    } catch (err) {
+      console.error(`Error fetching user profile for user ${userId}:`, err);
+      return null;
+    }
+  };
 
   // Pagination logic
   const indexOfLastPost = currentPage * postsPerPage;
@@ -50,7 +73,7 @@ const ResoAdmin = () => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
-    <div data-aos="fade-up" >
+    <div data-aos="fade-up">
       <AdminNavi />
       <div className="proAdmin_content">
         <h1 style={{ marginTop: "80px" }}>Resources Page</h1> <br />

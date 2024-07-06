@@ -42,7 +42,7 @@ export const ProjectCard = ({ projectpost, page }) => {
       try {
         const userData = await fetchUserData(projectpost.postedBy);
         setAuthor(userData); // Set author data
-        console.log(userData);
+        
       } catch (error) {
         console.error("Error fetching author:", error);
       }
@@ -78,7 +78,7 @@ export const ProjectCard = ({ projectpost, page }) => {
   };
   
   const handleAlertCloselogin = () =>{
-    setShowLoginAlert(false);
+    setShowLoginAlert(false); 
     navigate('/login');
   }
  

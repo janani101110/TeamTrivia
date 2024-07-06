@@ -87,6 +87,13 @@ html {
   font-size: large;
   text-align: justify;
   white-space: pre-line;
+
+  white-space: normal; /* Allow text to wrap */
+  overflow: hidden; /* Ensure the text is contained */
+  text-overflow: ellipsis; /* Add ellipsis for overflowing text */
+  display: -webkit-box; /* Fallback for older browsers */
+ /* -webkit-line-clamp: 3;*/ /* Limit to 3 lines */
+  -webkit-box-orient: vertical; /* Vertical text orientation */
 }
 
 .project_github {
@@ -116,23 +123,68 @@ html {
 
 /* Wrapper for the scrolling content */
 .related_projects_wrapper {
-  display: inline-block; /* Allow inline scrolling */
-  white-space: nowrap; /* Prevent line breaks */
+ /* display: inline-block; /* Allow inline scrolling 
+  white-space: nowrap;*/ /* Prevent line breaks */
+  display: flex; /* Use flexbox for layout */
+  flex-wrap: nowrap; /* Prevent line breaks */
   animation: scroll-left 20s linear infinite; /* Apply the scrolling animation */
 }
 
-/* Keyframes for the scrolling animation */
-@keyframes scroll-left {
-  0% {
-    transform: translateX(100%); /* Start at the right */
-  }
-  100% {
-    transform: translateX(-100%); /* End at the left */
+
+/* Project Comment Section */
+/* ProjectComments container */
+.ProjectComments {
+  margin-top: 20px; /* Adjust margin as needed */
+}
+
+/* Title styling */
+.projectCommentTitle {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+/* Inside comment section */
+.insideProjectComment {
+  margin-top: 10px; /* Adjust margin as needed */
+}
+
+/* Input field for comments */
+.ProjectCommentTextArea {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+/* Alert message style */
+.Alert {
+  /* Define your alert styling here */
+}
+
+/* Media queries for responsiveness */
+@media screen and (max-width: 1200px) {
+  .ProjectComments {
+    /* Adjust styles for 1200px viewport width */
   }
 }
 
-.related_project_item {
-  display: inline-block; /* Inline block items */
-  max-width: 350px; /* Fixed width for each project card */
-  margin-right: 20px; /* Space between items */
+@media screen and (max-width: 768px) {
+  .projectCommentTitle {
+    font-size: 20px; /* Example of font-size adjustment for 768px */
+  }
+  .ProjectCommentTextArea {
+    font-size: 14px; /* Example of font-size adjustment for 768px */
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .projectCommentTitle {
+    font-size: 18px; /* Example of font-size adjustment for 480px */
+  }
+  .ProjectCommentTextArea {
+    font-size: 12px; /* Example of font-size adjustment for 480px */
+  }
 }

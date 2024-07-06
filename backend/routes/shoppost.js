@@ -4,7 +4,7 @@ const router = express.Router();
 const Shoppost = require("../models/Shoppost");
 const cron = require('node-cron');
 const nodemailer = require('nodemailer'); 
- 
+  
  
  
 const scheduleEmail = (shoppost) => {
@@ -83,18 +83,7 @@ router.route("/create").post((req, res) => {
       res.status(500).json({ error: "An error occurred while creating the shop post" });
     });
 });
-// router.get("/", async (req, res) => {
-//   try { 
-//     const shoppost = await Shoppost.find();
-//     res.send({ status: "ok", data: shoppost });
-//   } catch (err) {
-//     console.log(err);
-//     res.status(500).json({ error: "An error occurred while fetching shop posts" });
-//   }
-// });
 
-
-// 
 // Search shop posts
 router.get("/", async (req, res) => {
   const query = req.query.search || "";

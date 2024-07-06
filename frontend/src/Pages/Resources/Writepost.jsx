@@ -1,13 +1,15 @@
 
 import React, { useState, useEffect } from "react";
 import { URL } from "../../url";
-import axios from "axios";
+import axios from "axios"; 
 import "./Writepost.css";
 import { useNavigate } from "react-router-dom";
 import { ImCross } from "react-icons/im";
 import { imageDb } from "../../firebase";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { v4 } from "uuid";
+import Alert from "../../Component/Alert/Alert";
+
 import { useUsers } from "../../Context/UserContext";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css"; // Import Quill CSS
@@ -34,14 +36,7 @@ const categoriesList = {
     "Assembly and Soldering",
     "Testing and Validation"
   ],
-  "Data Sheets": [
-    "All Categories",
-    "Sensor Data Sheets",
-    "Microcontroller Data Sheets",
-    "Communication Module Data Sheets",
-    "Power Management IC Data Sheets",
-    "Component Specifications"
-  ],
+  
   "Communication Modules": [
     "All Categories",
     "Wi-Fi Modules",
@@ -96,8 +91,10 @@ export const Writepost = () => {
   const [cats, setCats] = useState([]);
   const [file, setFile] = useState(null);
   const navigate = useNavigate();
-  const { user } = useUsers();
+  const [showAlert, setShowAlert] = useState(false);
 
+  const { user } = useUsers();
+  const [agree, setAgree] = useState(false);
   useEffect(() => {
     if (user) {
       setPostedBy(user._id);
@@ -132,9 +129,13 @@ export const Writepost = () => {
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => { 
     e.preventDefault();
-
+    if (!agree) {
+      setShowAlert(true);
+      return;
+    }
+    
     let photoUrl = null;
 
     if (file) {
@@ -161,11 +162,19 @@ export const Writepost = () => {
         withCredentials: true,
       });
       console.log(res.data);
-      alert("Your resource has been submitted for approval");
-      navigate("/resources");
+      setShowAlert(true);
+      
     } catch (err) {
       console.log(err);
     }
+  };
+  const handleAdminalert = () =>{
+    setShowAlert(false);
+    navigate('/resources')
+  }
+  const handleAlertClose = () => {
+    setShowAlert(false);
+    
   };
 
   return (
@@ -182,12 +191,19 @@ export const Writepost = () => {
             <input
               type="checkbox"
               name="agree"
-              id=""
+              id="agree"
               className="agree"
+              onChange={(e) => setAgree(e.target.checked)}
               required
             />{" "}
             I agree
           </div>
+          {showAlert && (
+            <Alert
+              message="You must agree to the terms and conditions."
+              onClose={handleAlertClose}
+            />
+          )}
 
       <form onSubmit={handleSubmit} className="form">
         <input
@@ -253,8 +269,14 @@ export const Writepost = () => {
         <button type="submit" className="publish-btn">
           Publish
         </button>
+        {showAlert && (
+            <Alert
+              message="Your resource is submitted for Admin approval."
+              onClose={handleAdminalert}
+            />
+          )}
       </form>
-    </div>
+    </div> 
   );
 };
 

@@ -1,14 +1,14 @@
-
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { URL } from "../../url";
-import { useParams} from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useUsers } from "../../Context/UserContext";
 import "./ResoPostdetails.css";
 import { ResoComment } from "./ResoComment";
 import { useNavigate } from "react-router-dom";
 import ReactQuill from "react-quill"; // Import ReactQuill for rendering
 import { FaStar } from "react-icons/fa"; // Import star icon from react-icons
+import Alert from "../../Component/Alert/Alert";
 
 export const ResoPostdetails = () => {
   const [author, setAuthor] = useState(null);
@@ -20,15 +20,13 @@ export const ResoPostdetails = () => {
   const [resoPost, setResoPost] = useState({});
   const [comments, setComments] = useState([]);
   const [comment, setComment] = useState("");
-
+  const [showAlert, setShowAlert] = useState(false);
   const [userRating, setUserRating] = useState(0);
   const [hover, setHover] = useState(null);
 
   const fetchUserData = async (userId) => {
     try {
-      const response = await fetch(
-        `http://localhost:5000/api/auth/details/${userId}`
-      );
+      const response = await fetch(`http://localhost:5000/api/auth/details/${userId}`);
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
@@ -40,21 +38,19 @@ export const ResoPostdetails = () => {
     }
   };
 
-  
   useEffect(() => {
     const fetchAuthor = async () => {
-      try {
-        const userData = await fetchUserData(resoPost.postedBy);
-        setAuthor(userData); // Set author data
-        console.log(userData);
-      } catch (error) {
-        console.error("Error fetching author:", error);
+      if (resoPost && resoPost.postedBy) {
+        try {
+          const userData = await fetchUserData(resoPost.postedBy);
+          setAuthor(userData);
+        } catch (error) {
+          console.error("Error fetching author:", error);
+        }
       }
     };
-
     fetchAuthor();
-  }, [resoPost.postedBy]);
-
+  }, [resoPost]);
 
   const fetchResoPost = async () => {
     try {
@@ -85,35 +81,28 @@ export const ResoPostdetails = () => {
     }
   };
 
-
   useEffect(() => {
     fetchResoPost();
     fetchPostComments();
     fetchUserRating();
   }, [resoPostId, user]);
 
-
   const postComment = async () => {
-    if (user){
-    try {
-      await axios.post(
-        `${URL}/api/resocomments/create`,
-        { comment, postId: resoPostId, postedBy: user._id },
-        { withCredentials: true }
-      );
-      fetchPostComments();
-      setComment("");
-    } catch (err) {
-      console.log(err);
+    if (user) {
+      try {
+        await axios.post(
+          `${URL}/api/resocomments/create`,
+          { comment, postId: resoPostId, postedBy: user._id },
+          { withCredentials: true }
+        );
+        fetchPostComments();
+        setComment("");
+      } catch (err) {
+        console.log(err);
+      }
+    } else {
+      setShowAlert(true);
     }
-  } else {
-    setTimeout(() => {
-      window.alert('Please login to post a comment.'); // Show error message in alert box
-    }, 100);
-    setTimeout(() => {
-      navigate("/login");
-    }, 2000);
-  }
   };
 
   const handleRating = async (rate) => {
@@ -126,20 +115,19 @@ export const ResoPostdetails = () => {
         console.log(err);
       }
     } else {
-      setTimeout(() => {
-        window.alert('Please login to rate this post.');
-      }, 100);
-      setTimeout(() => {
-        navigate("/login");
-      }, 2000);
+      setShowAlert(true);
     }
+  };
+
+  const handleAlertClose = () => {
+    setShowAlert(false);
+    navigate('/login');
   };
 
   return (
     <div className="reso-post-details-container">
       <div className="reso-post-title-wrapper">
         <h1 className="reso-post-title">{resoPost.title}</h1>
-
       </div>
       <div className="reso-post-info">
         {author && (
@@ -158,7 +146,6 @@ export const ResoPostdetails = () => {
       <div className="reso-post-content">
         <ReactQuill value={resoPost.desc} readOnly={true} theme="bubble" />
       </div>
-      
       <div className="reso-post-categories">
         <p>Categories:</p>
         <div>
@@ -167,7 +154,6 @@ export const ResoPostdetails = () => {
           ))}
         </div>
       </div>
-
       <div className="star-rating">
         {[...Array(5)].map((star, index) => {
           const ratingValue = index + 1;
@@ -183,9 +169,14 @@ export const ResoPostdetails = () => {
             />
           );
         })}
+        {showAlert && (
+          <Alert
+            message="Please login to rate this post."
+            onClose={handleAlertClose}
+          />
+        )}
         <p>Your Rating: {userRating}</p>
       </div>
-      
       <div className="reso-comments-section">
         <h3>Comments:</h3>
         <div className="reso-write-comment">

@@ -225,48 +225,8 @@ router.get("/", async (req, res) => {
 });
 
 
-// Generate PDF and download enrollments
-router.post("/download-enrollments", async (req, res) => {
-  try {
-    const { enrollments } = req.body;
 
-    const doc = new PDFDocument();
-    let chunks = [];
-    doc.on('data', chunk => chunks.push(chunk));
-    doc.on('end', () => {
-      const result = Buffer.concat(chunks);
-      res.writeHead(200, {
-        'Content-Type': 'application/pdf',
-        'Content-Length': result.length,
-        'Content-Disposition': 'attachment; filename=enrollments_report.pdf'
-      });
-      res.end(result);
-    });
 
-    doc.fontSize(16).text('Enrollments Report', { align: 'center' });
-
-    enrollments.forEach(post => {
-      doc.fontSize(12).text(`Name: ${post.name}`);
-      doc.fontSize(12).text(`Email: ${post.email}`);
-      doc.fontSize(12).text(`Date: ${new Date(post.createdAt).toLocaleDateString()}`);
-      doc.moveDown();
-    });
-
-    doc.end();
-
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// router.get("/user/:userId", async (req, res) => {
-//   try{
-//       const posts = await Post.find({ postedBy: req.params.userId });
-//       res.status(200).json(posts);
-//   } catch(err) {
-//       res.status(500).json(err);
-//   }
-// })
 
 router.delete("/:id",async (req,res)=>{
   try{

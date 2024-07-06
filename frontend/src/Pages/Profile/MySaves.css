@@ -1,5 +1,5 @@
 
-
+ 
 .mySavesBody {
   height: 100%; /* Adjust as needed */
   margin-bottom: 50px;
@@ -70,6 +70,11 @@
   margin-bottom: 5px;
   margin-left: 80px;
 }
+.UserBlogsCount{
+  font-size: 16px;
+  margin-bottom: 5px;
+  margin-left: 80px;
+}
 
 .mySaveBookMarksDiv,
 .mySaveBookMarksshopDiv,
@@ -88,9 +93,11 @@
   font-family: 'PT Sans', sans-serif; /* Correctly use the font-family */
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fit,minmax(350px,1fr)); /* Make grid responsive */
+  
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); /* Make grid responsive */
   gap: 20px; /* Adjust gap between items */
 }
+
 
 .mySaveBookMarksDiv ul li {
   border: 1px solid #ccc; /* Example border */
@@ -121,12 +128,12 @@
   display: flex;
   align-items: center;
   font-size: 24px; /* Adjust font size */
-  margin-left: 80px;
+  margin-left:80px;
 }
 
 .blogCardMyBookMarks {
   margin: 20px; /* Add margin for spacing */
-  display: grid;
+  display: flex;
   grid-template-columns: repeat(3, 380px); /* Make grid responsive */
   gap: 20px; /* Adjust gap between grid items */
 }
@@ -137,23 +144,47 @@
 .mySaveBookMarksshopDiv ul {
   margin-left: 100px;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
   grid-gap: 20px;
   margin-top: 35px;
 }
 .mySaveBookMarksresoDiv ul {
-  flex: 2;
-  padding: 20px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 40px;
-  margin-left: 100px;
-}
-
-.mySaveBookMarksproDiv ul{
   margin-left: 100px;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   grid-gap: 20px;
   margin-top: 35px;
+}
+
+
+.mySaveBookMarksproDiv ul{
+  margin-left: 100px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  grid-gap: 20px;
+  margin-top: 35px;
+}
+.post-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px; /* Adjust the gap between posts */
+  padding: 0;
+  list-style: none;
+}
+
+.post-list > * {
+  flex: 1 1 calc(33.333% - 20px); /* Adjust the percentage based on the number of columns */
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .post-list > * {
+    flex: 1 1 calc(50% - 20px); /* Adjust for smaller screens */
+  }
+}
+
+@media (max-width: 480px) {
+  .post-list > * {
+    flex: 1 1 100%; /* Adjust for mobile screens */
+  }
 }

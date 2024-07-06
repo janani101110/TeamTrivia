@@ -69,9 +69,9 @@ export const ProjectSearch = ({ defaultValue = "" }) => {
       <div
   className="ResoSearchDiv"
   style={{
-    position: 'fixed',
+    position: 'absolute',
     display: 'flex',
-    top: '25%',
+    marginTop:'35px',
     left: '35%',
     height: '30px',
     width: '300px',

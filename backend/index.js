@@ -23,6 +23,7 @@ const shoppostRoute= require("./routes/shoppost");
 const resopostRoutes = require("./routes/resoposts");
 const resocommentRoutes = require("./routes/resocomments");
 const projectpostRoute = require("./routes/projectposts");
+const projectCommentRoutes=require('./routes/projectComments');
 const answerRoutes = require("./routes/answer");
 const bookMarkRoutes = require('./routes/BookMarks');
 // const translate = require('google-translate-api');
@@ -103,6 +104,7 @@ app.use("/api/blogComments", blogCommentRoutes);
 app.use("/api/resoposts", resopostRoutes); // Route for resource posts
 app.use("/api/resocomments", resocommentRoutes);
 app.use("/api/projectposts", projectpostRoute);
+app.use("/api/projectComments", projectCommentRoutes);
 app.use("/api/answer", answerRoutes);
 app.use("/api/bookMarks", bookMarkRoutes);
 

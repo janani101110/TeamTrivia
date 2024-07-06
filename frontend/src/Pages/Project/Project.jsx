@@ -234,6 +234,7 @@ const [prompt, setPrompt] = useState(defaultValue); // State variable to hold th
             <Alert
               message="Please login to create a project post."
               onClose={handleAlertClose}
+              
             />
           )}
         {/*  </Link>*/}

@@ -8,9 +8,9 @@ import { useNavigate } from "react-router-dom";
 import { useUsers } from "../../Context/UserContext";
 import { URL } from "../../url";
 import { imageDb } from "../../firebase";
-
+import Alert from "../../Component/Alert/Alert";
 import AOS from "aos";
-import "aos/dist/aos.css";
+import "aos/dist/aos.css"; 
 
 export const ProjectForm = () => {
   const { user } = useUsers();
@@ -30,6 +30,7 @@ export const ProjectForm = () => {
   const [git_link, setGitLink] = useState("");
   const [formErrors, setFormErrors] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
 
   useEffect(() => {
     AOS.refresh(); // Refresh AOS on component mount/update
@@ -87,7 +88,7 @@ export const ProjectForm = () => {
       setFormErrors(errors);
       return;
     }
-
+    setFormErrors({});
     const projectPost = {
       name,
       email,
@@ -113,12 +114,15 @@ export const ProjectForm = () => {
         }
       );
       console.log(res.data);
-      alert("Your project has been submitted for approval");
-      navigate("/project");
+      setShowAlert(true);
     } catch (err) {
       console.error("Error submitting project:", err);
     }
   };
+  const handleAdminalert = () =>{
+    setShowAlert(false);
+    navigate('/project')
+  }
 
   const validateForm = () => {
     const errors = {};
@@ -375,7 +379,12 @@ export const ProjectForm = () => {
               <button type="submit" className="project_form_submit">
                 Submit
               </button>
-
+              {showAlert && (
+            <Alert
+              message="Your resource is submitted for Admin approval."
+              onClose={handleAdminalert}
+            />
+          )}
               {isSubmit && Object.keys(formErrors).length > 0 && (
                 <div className="project_ui_message_error">
                   Error: Please fill in all the required fields.
