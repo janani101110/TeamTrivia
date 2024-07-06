@@ -66,7 +66,7 @@ export const ResoSearch = ({ defaultValue = "" }) => {
   return (
     <div className="sensorsCollect">
       <div className="reso-content-container">
-      <div className="ResoSearchDiv" style={{marginTop:'25px',boxShadow:'0 0 10px grey',position:'fixed'}}>
+      <div className="ResoSearchDiv" style={{marginTop:'25px',boxShadow:'0 0 10px grey',position:'absolute'}}>
           <input
             type="text"
             className="searchBar" // CSS class for the search bar input

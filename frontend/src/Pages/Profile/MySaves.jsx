@@ -36,7 +36,7 @@ const MySaves = () => {
       } catch (error) {
         console.error("Error fetching bookmarked posts:", error);
       }
-    };
+    }; 
 
     fetchBookmarkedPosts();
   }, [user]);
@@ -104,7 +104,7 @@ const MySaves = () => {
             </ul>
           )}
         </div>
-
+        <div className="mySaveBookMarksresoDiv">
         <div className="mySaveBookMarksSubDiv">
           <div className="mySaveTags">
             Resources <hr />
@@ -157,6 +157,7 @@ const MySaves = () => {
           )}
         </div>
       </div>
+    </div>
     </div>
   );
 };

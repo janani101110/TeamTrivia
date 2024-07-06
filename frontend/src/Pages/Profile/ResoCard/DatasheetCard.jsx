@@ -1,42 +1,41 @@
+
 import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
+import "../../Resources/Sensors/Sensors.css";
+import { MdDelete } from "react-icons/md";
 
-export const DatasheetCard = ({ resoPost }) => {
-  const [author, setAuthor] = useState(null); 
-
-  const fetchUserData = async (userId) => {
-    try {
-      const response = await fetch(
-        `http://localhost:5000/api/auth/details/${userId}`
-      );
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      const userData = await response.json();
-      return userData;
-    } catch (error) {
-      console.error("Error fetching user data:", error);
-      throw error;
-    }
-  };
+const DatasheetCard = ({ resoPost, onDelete }) => {
+  const [author, setAuthor] = useState(null);
 
   useEffect(() => {
-    const fetchAuthor = async () => {
+    const fetchUserData = async (userId) => {
       try {
-        const userData = await fetchUserData(resoPost.postedBy);
+        const response = await fetch(
+          `http://localhost:5000/api/auth/details/${userId}`
+        );
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const userData = await response.json();
         setAuthor(userData); // Set author data
-        console.log(userData);
       } catch (error) {
-        console.error("Error fetching author:", error);
+        console.error("Error fetching user data:", error);
       }
     };
 
-    fetchAuthor();
+    fetchUserData(resoPost.postedBy);
   }, [resoPost.postedBy]);
 
-  return (
-    <div className="res-post">
+  const handleDeletePost = async () => {
+    const confirmation = window.confirm("Are you sure you want to delete the post?");
+    if (confirmation) {
+      onDelete(resoPost._id);
+    }
+  };
 
-        <div className="resuserdetails">
+  return (
+    <div className="datasheet-card">
+       <div className="resuserdetails">
           {author && (
             <div className="authorInfo">
               <img
@@ -49,18 +48,44 @@ export const DatasheetCard = ({ resoPost }) => {
           )}
           <p>{new Date(resoPost.createdAt).toLocaleDateString()}</p>
         </div>
-        <div className="respostcontent">
+        <div className="datapostcontent">
           <h3>{resoPost.title}</h3>
           {resoPost.pdf && (
-        <div className="reso-post-pdf">
-          <a href={resoPost.pdf} target="_blank" rel="noopener noreferrer">
-            Download PDF
-          </a>
+          <div className="reso-post-pdf">
+            <a
+              href={resoPost.pdf}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="pdf-link"
+            >
+              View Data Sheet
+            </a>
+          </div>
+          )}
         </div>
-      )}
-        </div>
+
+    <div className="datafooter">   
+      <div className="data-delete-wrapper">
+            <MdDelete className="data-delete-icon" onClick={handleDeletePost} />
+      </div>
+      <div className="datapost-status">
+        {resoPost.approved && !resoPost.rejected && <p>Status: Approved</p>}
+        {!resoPost.approved && resoPost.rejected && <p>Status: Rejected</p>}
+        {!resoPost.approved && !resoPost.rejected && <p>Status: Pending</p>}
+      </div>
+    </div> 
+
     </div>
   );
 };
 
-export default Datasheetcard;
+DatasheetCard.propTypes = {
+  resoPost: PropTypes.shape({
+    postedBy: PropTypes.string.isRequired,
+    createdAt: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+    pdf: PropTypes.string,
+  }).isRequired,
+};
+
+export default DatasheetCard;

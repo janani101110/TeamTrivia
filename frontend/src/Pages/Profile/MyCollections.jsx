@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import BlogCard from "./blogCard/blogCard";
 import ShopCard from "./shopcard/ShopCard";
 import ResoCard from "./ResoCard/ResoCard";
+import PostList from "./ResoCard/PostList";
 import ProjectCard from "./Projectcard/Projectcard";
 import axios from "axios";
 import { useUsers } from "../../Context/UserContext";
@@ -48,7 +49,7 @@ const MyCollections = () => {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
-        console.log(data, 'shopPosts');
+        
         setShopposts(data); // Update shopPosts state with fetched data
       } catch (err) {
         console.error('Error fetching shop posts:', err);
@@ -105,10 +106,12 @@ const MyCollections = () => {
     try {
       await axios.delete(`http://localhost:5000/api/Shoppost/${shoppostId}`);
       setShopposts((prevShopposts) => prevShopposts.filter((shoppost) => shoppost._id !== shoppostId));
+      console.log("Shop post deleted:", shoppostId); 
     } catch (err) {
       console.error("Error deleting shop post:", err);
     }
   };
+
 
   const handleResoDelete = async (postId) => {
     try {
@@ -293,7 +296,7 @@ const MyCollections = () => {
           Resources
           {"   "}
           <button onClick={handleToggleResoGrid} className="toggleButton">
-            {showBlogGrid ? (
+            {showResoGrid ? (
               <CIcon
                 icon={icon.cilCaretTop}
                 size=""
@@ -320,26 +323,11 @@ const MyCollections = () => {
         <p>No saved resource posts found.</p>
       ) : (
         <ul>
-          {showResoGrid
-            ? resoPosts.map((resoPost) => (
-              <ResoCard
-                style={{ textDecoration: "none" }}
-                key={resoPost._id}
-                resoPost={resoPost}
-                onDelete={handleResoDelete}
-              />
-            ))
-            : resoPosts.slice(0, 3).map((resoPost) => (
-              <ResoCard
-                style={{ textDecoration: "none" }}
-                key={resoPost._id}
-                resoPost={resoPost}
-                onDelete={handleResoDelete}
-              />
-            ))}
+          <PostList posts={showResoGrid ? resoPosts : resoPosts.slice(0, 3)} onDelete={handleResoDelete} />
         </ul>
       )}
     </div>
+
 <hr/>
 <div className="mySaveBookMarksproDiv">
       <div className="mySaveBookMarksproSubDiv">

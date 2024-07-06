@@ -9,7 +9,7 @@ import CIcon from "@coreui/icons-react";
 import * as icon from "@coreui/icons";
 import Notification from '../Blogs/BlogNotification';
 import { FaStar } from "react-icons/fa";
-
+import Alert from "../../Component/Alert/Alert";
 const Resourcepost = ({ resoPost }) => {
   const [author, setAuthor] = useState(null);
   const { user } = useUsers();
@@ -17,7 +17,7 @@ const Resourcepost = ({ resoPost }) => {
   const navigate = useNavigate();
   const [showNotification, setShowNotification] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState('');
-
+  const [showAlert, setShowAlert] = useState(false);
   const averageRating = resoPost.ratings && resoPost.ratings.length > 0
     ? resoPost.ratings.reduce((acc, r) => acc + r.rating, 0) / resoPost.ratings.length
     : 0;
@@ -89,15 +89,12 @@ const Resourcepost = ({ resoPost }) => {
         console.log(error);
       }
     } else {
-      setTimeout(() => {
-        window.alert("Please login to add Bookmarks.");
-      }, 100);
-      setTimeout(() => {
-        navigate("/login");
-      }, 2000);
-    }
+      setShowAlert(true);
+  }};
+  const handleAlertClose = () => {
+    setShowAlert(false);
+    navigate('/login');
   };
-
   return (
     <div className="res-post">
       <Link to={`/resopostdetails/${resoPost._id}`}>
@@ -138,6 +135,12 @@ const Resourcepost = ({ resoPost }) => {
                 className="BlogFooteMarkIcon"
               />
             </button>
+            {showAlert && (
+            <Alert
+              message="Please login to create a post."
+              onClose={handleAlertClose}
+            />
+          )}
         </div>
 
         {showNotification && (
@@ -158,4 +161,4 @@ const Resourcepost = ({ resoPost }) => {
   );
 };
 
-export default Resourcepost
+export default Resourcepost;

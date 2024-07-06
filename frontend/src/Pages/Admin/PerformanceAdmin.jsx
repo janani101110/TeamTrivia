@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import AdminNavi from "./AdminNavi";
@@ -54,6 +55,7 @@ const styles = StyleSheet.create({
   },
 });
 
+
 // Create a PDF document component
 const EnrollmentReport = ({ enrollments }) => (
   <Document>
@@ -72,6 +74,8 @@ const EnrollmentReport = ({ enrollments }) => (
               <Text style={styles.tableCell}>Date</Text>
             </View>
           </View>
+          
+          {/*data fetch to pdf*/}
           {enrollments.map((post) => (
             <View key={post._id} style={styles.tableRow}>
               <View style={styles.tableCol}>
@@ -85,6 +89,7 @@ const EnrollmentReport = ({ enrollments }) => (
                   {new Date(post.createdAt).toLocaleDateString()}
                 </Text>
               </View>
+
             </View>
           ))}
         </View>
@@ -95,7 +100,7 @@ const EnrollmentReport = ({ enrollments }) => (
 
 const PerformanceAdmin = () => {
   const [projects, setProjects] = useState([]);
-  const [shopPosts, setShopPosts] = useState([]);
+  const [resourcePosts, setResourcePosts] = useState([]);
   const [filters, setFilters] = useState({
     action: "",
     topic: "",
@@ -113,9 +118,9 @@ const PerformanceAdmin = () => {
   const fetchEnrollments = async () => {
     try {
       let url = `${URL}/api/projectposts`;
-      if (filters.topic === "shop_posts") {
-        url = `${URL}/api/shopposts`;
-      }
+      if (filters.topic === "resources") {
+        url = `${URL}/api/resoposts`;
+      } 
 
       const response = await axios.get(url, { params: filters });
       const filteredEnrollments = response.data.filter((post) => {
@@ -126,14 +131,14 @@ const PerformanceAdmin = () => {
         }
         if (filters.action === "approved") return post.approved;
         if (filters.action === "rejected") return post.rejected;
-        if (filters.action === "created") return post.created;
-        if (filters.action === "added") return post.added;
+      {/*  if (filters.action === "created") return post.created;
+        if (filters.action === "added") return post.added;*/}
         return true;
       });
       if (filters.topic === "projects") {
         setProjects(filteredEnrollments);
-      } else if (filters.topic === "shop_posts") {
-        setShopPosts(filteredEnrollments);
+      } else if (filters.topic === "resources") {
+        setResourcePosts(filteredEnrollments);
       }
       setEnrollments(filteredEnrollments);
     } catch (error) {
@@ -141,6 +146,16 @@ const PerformanceAdmin = () => {
     }
   };
 
+  const fetchUserProfile = async (userId) => {
+    try {
+      const res = await axios.get(`http://localhost:5000/api/users/${userId}`);
+      return res.data; // Assuming res.data contains { name, email, ... }
+    } catch (err) {
+      console.error(`Error fetching user profile for user ${userId}:`, err);
+      return null;
+    }
+  };
+  
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFilters({ ...filters, [name]: value });
@@ -225,8 +240,6 @@ const PerformanceAdmin = () => {
                 <option value="">Select Action</option>
                 <option value="approved">Approved</option>
                 <option value="rejected">Rejected</option>
-                <option value="created">Created</option>
-                <option value="added">Added</option>
               </select>
             </label>
           </div>
@@ -246,8 +259,6 @@ const PerformanceAdmin = () => {
                 <option value="">Select Topic</option>
                 <option value="projects">Projects</option>
                 <option value="resources">Resources</option>
-                <option value="blogs">Blogs</option>
-                <option value="shop_posts">Shop Posts</option>
               </select>
             </label>
           </div>

@@ -28,7 +28,7 @@ const QuestionCard = ({ question, onDelete }) => {
       try {
         const userData = await fetchUserData(question.postedBy);
         setAuthor(userData);
-        console.log(userData);
+        
       } catch (error) {
         console.error("error fetching author", error);
       }

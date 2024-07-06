@@ -9,7 +9,7 @@ import searchIcon from '../../Component/Assets/search.png'; // Importing the sea
 
 export const Shopping = ({ defaultValue = "" }) => { 
   const shopBannerRef = useRef(null);
-  const [shopposts, setShopposts] = useState([]);
+  const [shopposts, setShopposts] = useState([]); 
   const { user } = useUsers(); // Access user data from context
   const [showAlert, setShowAlert] = useState(false);
   const navigate = useNavigate(); 

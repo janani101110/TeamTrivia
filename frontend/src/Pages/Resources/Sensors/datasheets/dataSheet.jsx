@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import {Link, useLocation } from "react-router-dom";
 import "../Sensors.css";
@@ -5,6 +6,7 @@ import "../Sidebar.css";
 import Datasheetcard from "../../Sensors/datasheets/Datasheetcard";
 import { URL } from "../../../../url"; // Assuming URL is correctly imported from 'url.js'
 import axios from "axios";
+import upload from "../../Assets/upload.png";
 
 export const DataSheet = () => {
   const { search } = useLocation();
@@ -52,13 +54,7 @@ export const DataSheet = () => {
 
       <div className="sidebar">
       <table>
-        {/* <thead>
-          <tr>
-            <Link to="/dataSheet" className={getLinkClassName(null)}>
-              <th>All Categories</th>
-            </Link>
-          </tr>
-        </thead> */}
+
         <tbody>
           <tr>
             <Link to="/dataSheet?category=Sensor Data Sheets" className={getLinkClassName("Sensor Data Sheets")}>
@@ -89,13 +85,18 @@ export const DataSheet = () => {
       </table>
     </div>
 
-  <div>
-    <Link to ="/datasheetwrite">
-    <button >Upload Data Sheets</button>
-    </Link>
-  </div>
 
       <div className="reso-content-container">
+
+      <div className="dataheader"> 
+
+    <Link to ="/datasheetwrite">
+    <button className="databutton"> {upload && (
+                  <img src={upload} alt="upload" className="databutton-icon" />
+                )} Upload</button>
+    </Link>
+  </div>
+  
         <div className="res-posts-container">
           {filteredPosts.length > 0 ? (
             currentPosts.map((resoPost) => (

@@ -1,64 +1,66 @@
+
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import ReactQuill from "react-quill"; // Import ReactQuill for rendering
-import { BiEdit } from "react-icons/bi";
+import ReactQuill from "react-quill";
 import { MdDelete } from "react-icons/md";
 import "../../Resources/Sensors/Sensors.css";
 import { FaStar } from "react-icons/fa";
-
+import Alert from "../../../Component/Alert/Alert"; // Import Alert component
 const ResoCard = ({ resoPost, onDelete }) => {
   const [author, setAuthor] = useState(null);
-
+  const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const averageRating = resoPost.ratings && resoPost.ratings.length > 0
     ? resoPost.ratings.reduce((acc, r) => acc + r.rating, 0) / resoPost.ratings.length
     : 0;
 
-    console.log(averageRating);
+  const fetchUserData = async (userId) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/auth/details/${userId}`);
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const userData = await response.json();
+      return userData;
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+      throw error;
+    }
+  };
 
-    const fetchUserData = async (userId) => {
+  useEffect(() => {
+    const fetchAuthor = async () => {
       try {
-        const response = await fetch(
-          `http://localhost:5000/api/auth/details/${userId}`
-        );
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const userData = await response.json();
-        return userData;
+        const userData = await fetchUserData(resoPost.postedBy);
+        setAuthor(userData);
+        console.log(userData);
       } catch (error) {
-        console.error("Error fetching user data:", error);
-        throw error;
+        console.error("Error fetching author:", error);
       }
     };
-  
-    useEffect(() => {
-      const fetchAuthor = async () => {
-        try {
-          const userData = await fetchUserData(resoPost.postedBy);
-          setAuthor(userData); // Set author data
-          console.log(userData);
-        } catch (error) {
-          console.error("Error fetching author:", error);
-        }
-      };
-  
-      fetchAuthor();
-    }, [resoPost.postedBy]);
+
+    fetchAuthor();
+  }, [resoPost.postedBy]);
+
+  const handleDelete = () => {
+    setShowDeleteAlert(true);
+  };
   
 
-  const handleDeletePost = async () => {
-    const confirmation = window.confirm("Are you sure you want to delete the post?");
-    if (confirmation) {
+  const handleAlertClose = () => {
+    if (onDelete && typeof onDelete === 'function') {
       onDelete(resoPost._id);
     }
+    setShowDeleteAlert(false);
   };
 
   return (
     <div className="res-post">
       <Link to={`/resopostdetails/${resoPost._id}`}>
-        <div className="respostimg">
-          <img src={resoPost.photo} alt={resoPost.title} className="res-post-img" />
-        </div>
+        {resoPost.photo && (
+          <div className="respostimg">
+            <img src={resoPost.photo} alt={resoPost.title} className="res-post-img" />
+          </div>
+        )}
         <div className="resuserdetails">
           {author && (
             <div className="authorInfo">
@@ -67,7 +69,7 @@ const ResoCard = ({ resoPost, onDelete }) => {
                 alt={author.username}
                 className="authorProfilePicture"
               />
-              <p>{author.username}</p> {/* Display author name */}
+              <p>{author.username}</p>
             </div>
           )}
           <p>{new Date(resoPost.createdAt).toLocaleDateString()}</p>
@@ -80,27 +82,28 @@ const ResoCard = ({ resoPost, onDelete }) => {
             <p>Description not available</p>
           )}
         </div>
-        <div className="resofooter">
-        <div className="reso-edit-delete-wrapper">
-        <Link to={`/resoeditpost/${resoPost._id}`}>
-             <BiEdit
-            className="reso-edit-icon"
-            />
-        </Link>
-         
-          <MdDelete
-            className="reso-delete-icon"
-            onClick={handleDeletePost}
-          />
-        </div>
-
-
-        <div className="res-rating">
-        <FaStar className="resoStar" size={20} color="#ffc107" />
-        <span>{averageRating.toFixed(1)}</span>
-        </div>
-</div>
       </Link>
+      <div className="post-status">
+        {resoPost.approved && !resoPost.rejected && <p>Status: Approved</p>}
+        {!resoPost.approved && resoPost.rejected && <p>Status: Rejected</p>}
+        {!resoPost.approved && !resoPost.rejected && <p>Status: Pending</p>}
+      </div>
+      <div className="postfooter">
+        <div className="reso-edit-delete-wrapper">
+          <MdDelete className="reso-delete-icon" onClick={handleDelete} />
+        </div>
+        <div className="res-rating">
+          <FaStar className="resoStar" size={20} color="#ffc107" />
+          <span>{averageRating.toFixed(1)}</span>
+        </div>
+        {showDeleteAlert && (
+        <Alert
+          message="Are you sure you want to delete this post?"
+          onClose={handleAlertClose}
+          
+        />
+      )}
+      </div>
     </div>
   );
 };

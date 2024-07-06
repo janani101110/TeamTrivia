@@ -7,6 +7,7 @@ import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { v4 } from "uuid";
 import { useNavigate } from "react-router-dom";
 import { useUsers } from "../../Context/UserContext";
+import Alert from "../../Component/Alert/Alert";
 
 export const Shoppingpost = () => {
   const [name, setName] = useState("");
@@ -21,6 +22,8 @@ export const Shoppingpost = () => {
   const [postedBy, setPostedBy] = useState("");
   const [userEmail, setUserEmail] = useState("");
   const [error, setError] = useState({ contact: "", email: "" });
+  const [agree, setAgree] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -75,7 +78,10 @@ export const Shoppingpost = () => {
 
   const handleClick = async (event) => {
     event.preventDefault();
-
+    if (!agree) { 
+      setShowAlert(true);
+            return;
+    }
     if (error.contact || error.email) {
       alert("Please correct the errors before submitting.");
       return;
@@ -110,6 +116,10 @@ export const Shoppingpost = () => {
       console.error("Error creating shop post:", error);
     }
   };
+  const handleAlertClose = () => {
+    setShowAlert(false);
+    
+  };
 
   return (
     <div className="adpost">
@@ -128,12 +138,19 @@ export const Shoppingpost = () => {
             <input
               type="checkbox"
               name="agree"
-              id=""
+              id="agree"
               className="agree"
+              onChange={(e) => setAgree(e.target.checked)}
               required
             />{" "}
             I agree
           </div>
+          {showAlert && (
+            <Alert
+              message="You must agree to the terms and conditions."
+              onClose={handleAlertClose}
+            />
+          )}
           <table className="shoptable">
             <tbody>
               <tr className="shoprow">

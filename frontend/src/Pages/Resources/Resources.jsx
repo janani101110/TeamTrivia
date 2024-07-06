@@ -4,6 +4,7 @@ import read from "../Resources/Assets/read1.png"; // Import icon image
 import pen from "../Resources/Assets/pen1.png"; // Import icon image
 import { Link , useNavigate } from "react-router-dom";
 import { useUsers } from "../../Context/UserContext"; // Import user context
+import Alert from "../../Component/Alert/Alert";
 
 import sensors from "../Resources/Assets/sensors.png";
 import pcb from "../Resources/Assets/pcb.png";
@@ -20,6 +21,7 @@ export const Resources = ({ defaultValue = "" }) => {
 
   const { user } = useUsers(); // Access user data from context
   const navigate = useNavigate(); // Use useNavigate hook
+  const [showAlert, setShowAlert] = useState(false);
 
   const [prompt, setPrompt] = useState(defaultValue); // State variable to hold the search query
 
@@ -39,16 +41,15 @@ export const Resources = ({ defaultValue = "" }) => {
   // Function to handle create button click
   const handleCreateClick = () => {
     if (!user) {
-      setTimeout(() => {
-        window.alert('Please login to create a resource post.'); // Show error message in alert box
-      }, 100);
-      setTimeout(() => {
-        navigate("/login");
-      }, 2000);
+      setShowAlert(true);
     } else {
-      // If user is logged in, navigate to create post page
-      navigate("/writepost");
+      navigate('/writepost');
     }
+  };
+
+  const handleAlertClose = () => {
+    setShowAlert(false);
+    navigate('/login');
   };
 
   useEffect(() => {
@@ -121,13 +122,20 @@ export const Resources = ({ defaultValue = "" }) => {
               {read && (
                   <img src={read} alt="read" className="button-icon" />
                 )} Learn
-              </button>
+              </button> 
              
               <button onClick={handleCreateClick}> 
                 {pen && (
                   <img src={pen} alt="pen" className="button-icon" />
                 )} Write
+
               </button>
+              {showAlert && (
+            <Alert
+              message="Please login to create a post."
+              onClose={handleAlertClose}
+            />
+          )}
             </div>
    
         </div>

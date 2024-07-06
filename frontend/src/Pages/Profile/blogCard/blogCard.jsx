@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from "react";
 import "./blogCard.css";
-import axios from "axios";
+import axios from "axios"; 
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import CIcon from "@coreui/icons-react";
 import * as icon from "@coreui/icons";
@@ -9,7 +9,7 @@ import { useUsers } from "../../../Context/UserContext";
 import ShareBox from "../../Blogs/ShareBox";
 import { formatDistanceToNow, format } from "date-fns";
 import Notification from "../../Blogs/BlogNotification";
-
+import Alert from "../../../Component/Alert/Alert"; // Import Alert component
 const BlogCard = ({ blogPost, onDelete }) => {
   const [author, setAuthor] = useState(null);
   const { user } = useUsers();
@@ -24,6 +24,8 @@ const BlogCard = ({ blogPost, onDelete }) => {
   const [shareUrl, setShareUrl] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
+  const [showDeleteAlert, setShowDeleteAlert] = useState(false);
+
 
   useEffect(() => {
     // Restore scroll position upon navigating back from login
@@ -190,10 +192,15 @@ const BlogCard = ({ blogPost, onDelete }) => {
   };
 
   const handleDelete = () => {
-    const confirmation = window.confirm("Are you sure you want to delete the post?");
-    if (confirmation) {
+    setShowDeleteAlert(true);
+  };
+  
+
+  const handleAlertClose = () => {
+    if (onDelete && typeof onDelete === 'function') {
       onDelete(blogPost._id);
     }
+    setShowDeleteAlert(false);
   };
 
 
@@ -261,7 +268,13 @@ const BlogCard = ({ blogPost, onDelete }) => {
               style={{ "--ci-primary-color": "black" }}
             />
           </button>
-    
+          {showDeleteAlert && (
+        <Alert
+          message="Are you sure you want to delete this post?"
+          onClose={handleAlertClose}
+          
+        />
+      )}
         </div>
         <div className="blogCardFooterRow">
           <button className="BlogFooterkButton">

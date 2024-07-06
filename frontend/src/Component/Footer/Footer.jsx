@@ -93,7 +93,7 @@ export const Footer = () => {
         onClick={() => setMenu("projects")}
         className={menu === "projects" ? "active" : ""}
       >
-        <Link to="/projects">Projects</Link>
+        <Link to="/project">Projects</Link>
       </li>
       <li
         onClick={() => setMenu("blogs")}

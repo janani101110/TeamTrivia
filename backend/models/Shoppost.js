@@ -26,7 +26,7 @@ const ShoppostSchema = new mongoose.Schema(
     createdAt:{ 
       type: Date,
       default: Date.now,
-      index: { expires: '4d' },
+      index: { expires: '7d' },
     },
     userEmail:{
       type:String,

@@ -9,7 +9,7 @@ const Alert = ({ message, onClose }) => {
       </div>
       <div className="alert-content">
         
-        <p>{message}</p>
+        <p>{message}</p> 
         
         <button className="close-btn" onClick={onClose}>OK</button>
       </div>
