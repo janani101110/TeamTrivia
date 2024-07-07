@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import "./InsidePost.css";
 import axios from "axios";
-import { useParams, Link ,useNavigate, useLocation} from "react-router-dom";
+import { useParams, Link, useNavigate, useLocation } from "react-router-dom";
 import { useUsers } from "../../Context/UserContext";
 import CIcon from "@coreui/icons-react";
 import * as icon from "@coreui/icons";
 import { BlogComment } from "./BlogComment";
 import Alert from "../../Component/Alert/Alert";
+import Notification from './BlogNotification';
 
 const URL = "http://localhost:5000"; // Define your base URL here
 
@@ -22,16 +23,20 @@ const fetchUserData = async (userId) => {
 
 export const InsidePost = () => {
   const { id: blogPostId } = useParams();
-  const [blogPost, setBlogPost] = useState({});
+  const [blogPost, setBlogPost] = useState({ likes: [] }); // Initialize likes with an empty array
   const [author, setAuthor] = useState(null);
   const { user } = useUsers();
-  const [likes, setLikes] = useState(0);
+  const [likes, setLikes] = useState(0); // Initialize likes count
   const [liked, setLiked] = useState(false);
+  const [unLiked, setUnLiked] = useState(false);
+  const [showNotification, setShowNotification] = useState(false);
+  const [notificationMessage, setNotificationMessage] = useState('');
   const [comments, setComments] = useState([]);
   const [comment, setComment] = useState("");
   const [showAlert, setShowAlert] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+
   const fetchPost = async () => {
     try {
       const res = await axios.get(`${URL}/api/blogPosts/${blogPostId}`);
@@ -60,16 +65,24 @@ export const InsidePost = () => {
         );
         setLikes(likes + 1);
         setLiked(true);
-        
+        setUnLiked(false);
+        setNotificationMessage('Liked successfully!');
+        setShowNotification(true);
+        setTimeout(() => setShowNotification(false), 3000);
       } catch (error) {
         console.error("Error liking post:", error);
       }
     } else {
-      setShowAlert(true);
-      return;
+      setTimeout(() => {
+        const scrollPosition = window.scrollY;
+        window.alert("Please login to like the post.");
+      }, 100);
+      setTimeout(() => {
+        const scrollPosition = window.scrollY;
+        navigate("/login", { state: { from: location, scrollPosition } });
+      }, 2000);
     }
   };
-
 
   const handleUnlike = async () => {
     if (user) {
@@ -79,16 +92,24 @@ export const InsidePost = () => {
         );
         setLikes(likes - 1);
         setLiked(false);
-        
+        setUnLiked(true);
+        setNotificationMessage('Unliked successfully!');
+        setShowNotification(true);
+        setTimeout(() => setShowNotification(false), 3000);
       } catch (error) {
         console.error("Error unliking post:", error);
       }
     } else {
-      setShowAlert(true);
-      return;
+      setTimeout(() => {
+        const scrollPosition = window.scrollY;
+        window.alert("Please login to unlike the post.");
+      }, 100);
+      setTimeout(() => {
+        const scrollPosition = window.scrollY;
+        navigate("/login", { state: { from: location, scrollPosition } });
+      }, 2000);
     }
   };
-
 
   const fetchBlogComments = async () => {
     try {
@@ -103,6 +124,12 @@ export const InsidePost = () => {
     fetchPost();
     fetchBlogComments();
   }, [blogPostId]);
+
+  useEffect(() => {
+    if (blogPost.likes) {
+      setLikes(blogPost.likes.length);
+    }
+  }, [blogPost]);
 
   const postComment = async (e) => {
     e.preventDefault();
@@ -122,10 +149,11 @@ export const InsidePost = () => {
       setShowAlert(true);
     }
   };
+
   const handleAlertClose = () => {
     const scrollPosition = window.scrollY;
     setShowAlert(false);
-    navigate("/login", { state: {  from: location, scrollPosition } });
+    navigate("/login", { state: { from: location, scrollPosition } });
   };
 
   const handleKeyDown = (e) => {
@@ -134,7 +162,6 @@ export const InsidePost = () => {
     }
   };
 
-  // Extract YouTube video ID from URL
   const getYoutubeVideoId = (url) => {
     const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
     const match = url.match(regExp);
@@ -196,20 +223,19 @@ export const InsidePost = () => {
         <CIcon
           icon={icon.cilThumbUp}
           size=""
-          style={{ "--ci-primary-color": "black" }}
+          style={{ color: liked ? "purple" : "black" }}
           onClick={handleLike}
           className="insideBlogLike"
         />
         <CIcon
           icon={icon.cilThumbDown}
           size=""
-          style={{ "--ci-primary-color": "black" }}
+          style={{ color: unLiked ? "purple" : "black" }}
           onClick={handleUnlike}
           className="insideBlogLike"
         />
       </div>
 
-      {/* Blog comments section */}
       <div className="BlogComments">
         <div className="blogCommentTitle"> Comments</div>
         <div className="insideBlogComment">

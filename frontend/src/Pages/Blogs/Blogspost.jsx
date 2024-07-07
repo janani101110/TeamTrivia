@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import "./Blogspost.css";
 import axios from "axios";
-import { Link, useNavigate, useLocation } from "react-router-dom";import CIcon from "@coreui/icons-react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import CIcon from "@coreui/icons-react";
 import * as icon from "@coreui/icons";
 import { useUsers } from "../../Context/UserContext";
-import ShareBox from './ShareBox';
-import { formatDistanceToNow, format } from 'date-fns';
-import Notification from './BlogNotification';
+import ShareBox from "./ShareBox";
+import { formatDistanceToNow, format } from "date-fns";
+import Notification from "./BlogNotification";
 
 const Blogspost = ({ blogPost }) => {
   const [author, setAuthor] = useState(null);
@@ -16,10 +17,12 @@ const Blogspost = ({ blogPost }) => {
   const [liked, setLiked] = useState(false);
   const [unLiked, setUnLiked] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
-  const [notificationMessage, setNotificationMessage] = useState('');
+  const [notificationMessage, setNotificationMessage] = useState("");
   const [comments, setComments] = useState([]);
   const [showShareBox, setShowShareBox] = useState(false);
-const [shareUrl, setShareUrl] = useState('');
+ 
+ const shareUrl = `http://localhost:3000/InsidePost/${blogPost._id}`;
+
   const navigate = useNavigate();
 
   const location = useLocation();
@@ -30,7 +33,6 @@ const [shareUrl, setShareUrl] = useState('');
       window.scrollTo(0, location.state.scrollPosition);
     }
   }, [location.state?.scrollPosition]);
-
 
   const fetchUserData = async (userId) => {
     try {
@@ -93,7 +95,7 @@ const [shareUrl, setShareUrl] = useState('');
           blogPostId: blogPost._id,
         });
         setIsBookmarked(true);
-        setNotificationMessage('Bookmarked successfully!');
+        setNotificationMessage("Bookmarked successfully!");
         setShowNotification(true);
         setTimeout(() => setShowNotification(false), 3000);
       } catch (error) {
@@ -105,7 +107,7 @@ const [shareUrl, setShareUrl] = useState('');
         window.alert("Please login to add Bookmarks.");
       }, 100);
       setTimeout(() => {
-        navigate("/login", { state: {  from: location, scrollPosition } });
+        navigate("/login", { state: { from: location, scrollPosition } });
       }, 2000);
     }
   };
@@ -120,7 +122,7 @@ const [shareUrl, setShareUrl] = useState('');
         setLikes(likes + 1);
         setLiked(true);
         setUnLiked(false);
-        setNotificationMessage('Liked successfully!');
+        setNotificationMessage("Liked successfully!");
         setShowNotification(true);
         setTimeout(() => setShowNotification(false), 3000);
       } catch (error) {
@@ -133,7 +135,7 @@ const [shareUrl, setShareUrl] = useState('');
       }, 100);
       setTimeout(() => {
         const scrollPosition = window.scrollY;
-        navigate("/login", { state: {  from: location, scrollPosition } });
+        navigate("/login", { state: { from: location, scrollPosition } });
       }, 2000);
     }
   };
@@ -147,7 +149,7 @@ const [shareUrl, setShareUrl] = useState('');
         setLikes(likes - 1);
         setLiked(false);
         setUnLiked(true);
-        setNotificationMessage('Unliked successfully!');
+        setNotificationMessage("Unliked successfully!");
         setShowNotification(true);
         setTimeout(() => setShowNotification(false), 3000);
       } catch (error) {
@@ -160,16 +162,16 @@ const [shareUrl, setShareUrl] = useState('');
       }, 100);
       setTimeout(() => {
         const scrollPosition = window.scrollY;
-        navigate("/login", { state: {  from: location, scrollPosition } });
+        navigate("/login", { state: { from: location, scrollPosition } });
       }, 2000);
     }
   };
 
-
-
   const fetchBlogComments = async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/blogComments/post/${blogPost._id}`);
+      const res = await axios.get(
+        `http://localhost:5000/api/blogComments/post/${blogPost._id}`
+      );
       setComments(res.data);
     } catch (err) {
       console.error("Error fetching blog comments:", err);
@@ -182,8 +184,8 @@ const [shareUrl, setShareUrl] = useState('');
 
   const toggleShareBox = () => {
     setShowShareBox(!showShareBox);
+    console.log(shareUrl);
   };
-
 
   return (
     <div className="mainBlogpostcard">
@@ -199,32 +201,37 @@ const [shareUrl, setShareUrl] = useState('');
             <div className="blogPostTitle">{blogPost.title}</div>
             <br />
             <div>
-              <div className="blogPostDescription" dangerouslySetInnerHTML={{ __html: blogPost.desc.split(" ").slice(0, 30).join(" ") +
-                    "... See more" }}>
-
-              </div>
+              <div
+                className="blogPostDescription"
+                dangerouslySetInnerHTML={{
+                  __html:
+                    blogPost.desc.split(" ").slice(0, 30).join(" ") +
+                    "... See more",
+                }}
+              ></div>
               <br />
             </div>
           </div>
         </Link>
       </div>
       <div className="blogCardFooterMainDIv">
-
         <div className="blogCardFooterRow">
-       
           {author && (
-             <Link style={{ textDecoration: "none" }} to={`/authorpage/${author._id}`} key={author.id}>
-            <div className="BlogCardAuthorInfo">
-              <img
-                src={author.profilePicture}
-                alt=""
-                className="authorProfilePicture"
-              />
-              <p className="authorUsername"> {author.username} </p>
-            </div>
+            <Link
+              style={{ textDecoration: "none" }}
+              to={`/authorpage/${author._id}`}
+              key={author.id}
+            >
+              <div className="BlogCardAuthorInfo">
+                <img
+                  src={author.profilePicture}
+                  alt=""
+                  className="authorProfilePicture"
+                />
+                <p className="authorUsername"> {author.username} </p>
+              </div>
             </Link>
           )}
-          
         </div>
         <div className="blogCardFooterRow">
           <button className="BlogFooterkButton">
@@ -249,10 +256,10 @@ const [shareUrl, setShareUrl] = useState('');
               <CIcon
                 icon={icon.cilCommentBubble}
                 size=""
-                style={{ color:"black" }}
+                style={{ color: "black" }}
                 className="insideBlogLike"
               />
-             {comments.length}
+              {comments.length}
             </span>
           </button>
         </div>
@@ -264,21 +271,18 @@ const [shareUrl, setShareUrl] = useState('');
           </div>
 
           <div className="bookmarkWrapper">
-  <button
-    className="BlogFooterkButton"
-    onClick={toggleShareBox}
-  >
-  
-    <CIcon
-      icon={icon.cilShareAlt}
-      size=""
-      style={{ color:"black" }}
-      className="BlogFooteMarkIcon"
-    />
-  </button>
-  {showShareBox && <ShareBox postUrl={blogPost.url} onClose={toggleShareBox} />}
-</div>
-
+            <button className="BlogFooterkButton" onClick={toggleShareBox}>
+              <CIcon
+                icon={icon.cilShareAlt}
+                size=""
+                style={{ color: "black" }}
+                className="BlogFooteMarkIcon"
+              />
+            </button>
+            {showShareBox && (
+              <ShareBox postUrl={shareUrl} onClose={toggleShareBox} />
+            )}
+          </div>
 
           <div className="bookmarkWrapper">
             <button className="BlogFooterkButton" onClick={handleBookmark}>
