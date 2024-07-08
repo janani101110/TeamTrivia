@@ -197,7 +197,7 @@
     border-radius: 10px;
     box-shadow: 0 8px 16px rgba(195, 50, 251, 0.5);
     transition: all 0.3s ease;
-    max-height: 180px;
+    max-height: 170px;
   }
   
   .datasheet-card:hover {
@@ -235,14 +235,46 @@
 
   .datafooter{
     display: flex;
-    margin-top: 15px;
+    margin-top: 7px;
     margin-bottom: 15px;
-    gap: 149px;
+    gap: 135px;
   }
 
   .post-status{
     font-weight: bold;
     margin-bottom: 5px;
+  }
+
+  .ResopageSearchDiv {
+    position: relative; /* Positioning context for the search icon */
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto; /* Center the search bar */
+    margin-bottom: 50px;
+  }
+  
+  .searchBar {
+    width: 100%;
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+    border-radius: 7px;
+  }
+  
+  .searchIcon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%); /* Center the icon vertically */
+    cursor: pointer;
+    width: 25px; /* Adjust the size of the icon */
+    height: 25px; /* Adjust the size of the icon */
+  }
+
+  .resoresults {
+    margin-top: 60px !important;
+  }
+
+  .datapostfooter{
+    margin-top: 15px;
   }
 
   

@@ -69,9 +69,9 @@ export const BlogSearch = ({ defaultValue = "" }) => {
       <div
   className="ResoSearchDiv"
   style={{
-    position: 'fixed',
+    position: 'absolute',
     display: 'flex',
-    top: '25%',
+    top: '15%',
     left: '35%',
     height: '30px',
     width: '300px',

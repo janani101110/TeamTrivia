@@ -1,11 +1,11 @@
 import React from "react";
 import axios from "axios";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { URL } from "../../url";
 import "./ProjectHome.css"; 
 import ProjectCard from "./ProjectCard";
 import ProjectPgNavi from "./ProjectPgNavi";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,useLocation } from "react-router-dom";
 //import { BrowserRouter as Router, Route } from "react-router-dom";
 //import ProjectViewAll from "./ProjectViewAll";
 import banner2 from "./Assets/banner2.png";
@@ -25,7 +25,7 @@ export const Projects = ({ defaultValue = "" }) => {
   const [postsPerPage] = useState(4); //number of posts to display per page.
   const [orderBy, setOrderBy] = useState("latest"); // Default order by latest
   const navigate = useNavigate();
-
+  const location = useLocation();
   const { user } = useUsers(); // Access user data from context
 const [showAlert, setShowAlert] = useState(false);
 const [prompt, setPrompt] = useState(defaultValue); // State variable to hold the search query
@@ -125,8 +125,10 @@ const [prompt, setPrompt] = useState(defaultValue); // State variable to hold th
   };
 
   const handleAlertClose = () => {
+    const scrollPosition = window.scrollY;
+
     setShowAlert(false);
-    navigate('/login');
+    navigate('/login', { state: {  from: location, scrollPosition } });
   };
 
   const scrollToContent = () => {
@@ -229,7 +231,7 @@ const [prompt, setPrompt] = useState(defaultValue); // State variable to hold th
         {/* <Link to="/projectform" rel="noopener noreferrer">*/}
         <button className="projectclick_button" onClick={handleCreateClick}>
           Post Your Project Here!
-        </button>
+        </button> 
         {showAlert && (
             <Alert
               message="Please login to create a project post."

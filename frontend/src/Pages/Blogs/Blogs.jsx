@@ -141,7 +141,7 @@ export const Blogs = ({ defaultValue = "" }) => {
     if (!user) {
       setShowAlert(true);
     } else {
-      navigate('/writeBlog');
+      navigate('/writeBlog'); 
     }
   };
   const handleAlertClose = () => {

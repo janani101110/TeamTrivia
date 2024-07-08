@@ -105,7 +105,7 @@ export const Footer = () => {
         onClick={() => setMenu("shopping")}
         className={menu === "shopping" ? "active" : ""}
       >
-        <Link to="/shopping">Shopping</Link>
+        <Link to="/shopping">Shop</Link>
       </li>
       <li
         onClick={() => setMenu("forum")}

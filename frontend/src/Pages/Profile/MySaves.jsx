@@ -105,7 +105,7 @@ const MySaves = () => {
           )}
         </div>
         <div className="mySaveBookMarksresoDiv">
-        <div className="mySaveBookMarksSubDiv">
+        <div className="mySaveBookMarksresoSubDiv">
           <div className="mySaveTags">
             Resources <hr />
             <button onClick={handleToggleGrid} className="toggleButton">

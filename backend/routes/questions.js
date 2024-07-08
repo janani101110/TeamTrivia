@@ -3,9 +3,9 @@
 const express = require("express");
 const router = express.Router();
 const Questions = require("../models/questions");
-
+const pluralize = require('pluralize');
  
-// create new post
+// create new post 
 router.post("/create", async (req, res) => {
     try { 
       // Creating a new post instance using the ResoPost model
@@ -19,26 +19,30 @@ router.post("/create", async (req, res) => {
       res.status(500).json(err);
     }
   });  
-// get all post on the forum.jsx
-  // router.get("/", async (req, res) => {
-  //   try {
-  //     const questions = await Questions.find();
-  //     res.send({ status: "ok", data: questions });
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // }); 
+
   // Get all questions or search questions by title
 router.get("/", async (req, res) => {
   const query = req.query.search || "";
   try {
-    const searchFilter = { title: { $regex: query, $options: "i" } };
-    const questions = await Questions.find(query ? searchFilter : {});
+    let searchFilter = {};
+
+    if (query) {
+      // Create a regex pattern to match both singular and plural forms
+      const pattern = new RegExp(`\\b(${query}|${pluralize.singular(query)}|${pluralize.plural(query)})\\b`, 'i');
+
+      searchFilter = {
+        title: { $regex: pattern }
+      };
+    }
+
+    // Retrieving all questions, filtered by the search query if present
+    const questions = await Questions.find(searchFilter);
     res.status(200).json({ data: questions });
   } catch (err) {
     res.status(500).json({ error: "An error occurred while fetching questions" });
   }
 });
+
 
 
   //view post details
@@ -73,21 +77,7 @@ router.put("/views/:postId", async (req, res) => {
     res.status(500).json({ status: "error", message: "Internal server error" });
   }
 });
-// router.get("/user/:userId", async (req, res) => {
-//   try {
-//     const { userId } = req.params;
-//     console.log(`Fetching shop posts for user ID: ${userId}`); // Log user ID
-//     const questions = await Question.find({ postedBy: userId });
-//     if (!Question || questions.length === 0) {
-//       console.error(`No shop posts found for user ID: ${userId}`);
-//       return res.status(404).json({ error: 'No shop posts found' });
-//     }
-//     res.status(200).json(Question);
-//   } catch (err) {
-//     console.error('Error fetching shop posts:', err); // Log the error
-//     res.status(500).json({ error: 'Error fetching shop posts' });
-//   }
-// });
+
 
 //Get All Posts of a user
 router.get("/user/:userId", async (req, res) => {

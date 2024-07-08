@@ -99,7 +99,7 @@ export const ProjectCard = ({ projectpost, page, onDelete }) => {
               
             </div>
           </div>
-          <div className="post-status" style={{textAlign:'left'}}>
+          <div className="post-status" style={{textAlign:'left'}} >
         {projectpost.approved && !projectpost.rejected && <p>Status: Approved</p>}
         {!projectpost.approved && projectpost.rejected && <p>Status: Rejected</p>}
         {!projectpost.approved && !projectpost.rejected && <p>Status: Pending</p>}

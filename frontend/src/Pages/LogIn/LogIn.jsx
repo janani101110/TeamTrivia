@@ -1,14 +1,17 @@
-
 import React, { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import LoginImage from "../LogIn/images/loginImage.jpg";
 import GoogleIcon from "../LogIn/images/googleIcon.png";
+import ShowPassword from "../LogIn/images/showPassword.png";
+import hidePassword from "../LogIn/images/hidePassword.png"
+import gaveshaLogo from "../LogIn/images/logo.png";
 import "./LogIn.css";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/home"; // Default to "/home" if no previous page
@@ -50,6 +53,10 @@ function Login() {
     }
   };
 
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
   return (
     <div className="login">
       <div className="logindiv">
@@ -69,16 +76,21 @@ function Login() {
                 className="loginInput"
               />
             </div>
-            <div>
+            <div className="passwordContainer">
               <input
                 onChange={(e) => setPassword(e.target.value)}
-                type="password"
+                type={showPassword ? "text" : "password"}
                 name="password"
                 placeholder="Password"
                 autoComplete="new-password"
                 required
                 className="loginInput"
               />
+              <span onClick={togglePasswordVisibility} className="togglePassword">
+                {showPassword ? 
+                <img src={ShowPassword} className="loginShowPassword" alt="#"/>
+                :  <img src={hidePassword} className="loginShowPassword" alt="#"/>}
+              </span>
             </div>
             <br />
             <div>
@@ -117,6 +129,7 @@ function Login() {
             Signup
           </Link>
         </div>
+        <div className="loginText"> Powered By :  <img src={gaveshaLogo} className="loginLogo" alt="Logo of gavesha labs"/> </div>
       </div>
     </div>
   );

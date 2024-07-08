@@ -5,8 +5,6 @@ import { URL } from "../../url";
 import { useUsers } from "../../Context/UserContext";
 import { formatDistanceToNow, format } from "date-fns";
 import replyIcon from "../Resources/Assets/resreply.png";
-import Alert from "../../Component/Alert/Alert";
-import { useNavigate } from "react-router-dom"; 
 
 export const ResoComment = ({ c, fetchPostComments }) => {
   const [reply, setReply] = useState("");
@@ -14,35 +12,21 @@ export const ResoComment = ({ c, fetchPostComments }) => {
   const [showReplyInput, setShowReplyInput] = useState(false);
   const [showReplies, setShowReplies] = useState(false); // State to toggle display of replies
   const { user } = useUsers();
-  const [showDeleteAlert, setShowDeleteAlert] = useState(false);
-  const [showLoginAlert, setShowLoginAlert] = useState(false); // State for login alert
-  const navigate = useNavigate(); 
 
-  const deleteComment = (id) => {
-    setShowDeleteAlert(true); // Show the delete confirmation alert
-  };
+  const deleteComment = async (id) => {
 
-  const handleAlertClose = () => {
-    confirmDelete(true); // Close the delete confirmation alert
-  };
+    const confirmDelete = window.confirm("Are you sure you want to delete this comment?");
+    if (!confirmDelete) return; // If user cancels, do nothing
 
-  const confirmDelete = async () => {
     try {
-      await axios.delete(`${URL}/api/resocomments/${c._id}`, {
+      await axios.delete(`${URL}/api/resocomments/${id}`, {
         withCredentials: true,
       });
-      fetchPostComments(); // Refresh comments after deletion
-      setShowDeleteAlert(false); // Close the alert after successful deletion
+      fetchPostComments();
     } catch (err) {
       console.log(err);
-      // Handle error appropriately (e.g., show error message)
     }
   };
-  const handleAlertCloselogin = () =>{
-    setShowLoginAlert(false);
-    navigate('/login');
-  }
-  
 
   const fetchUserData = async (userId) => {
     try {
@@ -70,14 +54,10 @@ export const ResoComment = ({ c, fetchPostComments }) => {
 
   const postReply = async (e) => {
     e.preventDefault();
-    if (!user) {
-      setShowLoginAlert(true); // Show login alert if user is not logged in
-      return;
-    }
     try {
       await axios.post(
         `${URL}/api/resocomments/create`,
-        { answer: reply, postId: c.postId, parentId: c._id, postedBy: user._id },
+        { comment: reply, postId: c.postId, parentId: c._id, postedBy: user._id },
         { withCredentials: true }
       );
       fetchPostComments();
@@ -153,19 +133,6 @@ export const ResoComment = ({ c, fetchPostComments }) => {
           <ResoComment key={reply._id} c={reply} fetchPostComments={fetchPostComments} />
         ))}
       </div>
-      )}
-      {showDeleteAlert && (
-        <Alert
-          message="Are you sure you want to delete this comment?"
-          onClose={handleAlertClose}
-          onConfirm={confirmDelete}
-        />
-      )}
-      {showLoginAlert && (
-        <Alert
-          message="Please log in "
-          onClose={handleAlertCloselogin}
-        />
       )}
     </div>
   );

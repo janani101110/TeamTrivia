@@ -7,6 +7,7 @@ import Projectpost from "../../Pages/Project/ProjectCard";
 import Shoppost from "../../Pages/Shopping/Shopcard";
 import Question from "../../Pages/Forum/QuestionCard"
 import "../../Pages/Resources/Sensors/Sensors.css"; 
+import Datasheetcard from "../../Pages/Resources/Sensors/datasheets/Datasheetcard";
 import { URL } from "../../url";
 import { Search } from "./Search";
  
@@ -85,15 +86,20 @@ export const SearchResults = () => {
   return (
     <div className="sensorsCollect">
       <div className="reso-content-container" style={{ marginTop: "25px" }}>
+        <div className="sea" style={{marginBottom:'35px'}}>
         <Search defaultValue={query} />
-
+</div>
         {searchInitiated && (
           <div className="res-posts-container">
             {!noResults ? (
               <>
-                {currentResoPosts.map((resoPost) => (
-                  <Resourcepost key={resoPost.id} resoPost={resoPost} />
-                ))}
+                 {currentResoPosts.map((resoPost) => {
+                  if (resoPost.pdf) {
+                    return <Datasheetcard key={resoPost.id} resoPost={resoPost} />;
+                  } else {
+                    return <Resourcepost key={resoPost.id} resoPost={resoPost} />;
+                  }
+                })}
                 {currentBlogPosts.map((blogPost) => (
                   <Blogpost key={blogPost.id} blogPost={blogPost} />
                 ))}

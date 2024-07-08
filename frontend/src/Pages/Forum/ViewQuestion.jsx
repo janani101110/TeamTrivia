@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams,useNavigate } from "react-router-dom";
+import { useParams,useNavigate ,useLocation} from "react-router-dom";
 import axios from "axios";
 import { URL } from "../../url"; // Ensure this is correctly imported
 import { Forumreply } from "./Forumreply";
@@ -15,7 +15,7 @@ const ViewQuestion = () => {
   const { user } = useUsers();
   const [showAlert, setShowAlert] = useState(false);
   const navigate = useNavigate(); 
-
+  const location = useLocation();
 
   const fetchUserData = async (userId) => {
     try {
@@ -27,14 +27,7 @@ const ViewQuestion = () => {
     }
   };
   
-  // const fetchAuthor = async (userId) => {
-  //   try {
-  //     const userData = await fetchUserData(userId);
-  //     setAuthor(userData);
-  //   } catch (error) {
-  //     console.error("Error fetching author:", error);
-  //   }
-  // };
+  
 
   const fetchQuestion = async () => {
     try {
@@ -91,8 +84,10 @@ const ViewQuestion = () => {
     
   };
   const handleAlertClose = () => {
+    const scrollPosition = window.scrollY;
+
     setShowAlert(false);
-    navigate('/login');
+    navigate('/login', { state: {  from: location, scrollPosition } });
   };
   
   const formatDate = (date) => {
@@ -120,7 +115,7 @@ const ViewQuestion = () => {
     } else {
       return `${years} year${years !== 1 ? 's' : ''} ago`;
     }
-  };
+  }; 
   return (
     <div>
       {question ? (

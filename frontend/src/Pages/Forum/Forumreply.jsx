@@ -9,7 +9,7 @@ import { useUsers } from "../../Context/UserContext";
 import Alert from "../../Component/Alert/Alert";
 import { URL } from "../../url";
 import "./Forum.css";
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate ,useLocation} from "react-router-dom";  
 
 export const Forumreply = ({ answer, fetchPostComments }) => {
   const [reply, setReply] = useState("");
@@ -24,7 +24,7 @@ export const Forumreply = ({ answer, fetchPostComments }) => {
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const [showLoginAlert, setShowLoginAlert] = useState(false); // State for login alert
   const navigate = useNavigate(); 
-
+  const location = useLocation();
   useEffect(() => {
     setLikes(answer.likes || 0);
     setDislikes(answer.dislikes || 0);
@@ -51,8 +51,9 @@ export const Forumreply = ({ answer, fetchPostComments }) => {
     }
   };
   const handleAlertCloselogin = () =>{
+    const scrollPosition = window.scrollY;
     setShowLoginAlert(false);
-    navigate('/login');
+    navigate('/login', { state: {  from: location, scrollPosition } });
   }
   
   const postReply = async (e) => {

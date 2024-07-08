@@ -6,7 +6,7 @@ const Projectpost = require("../models/Projectpost"); //import Mongoose model 'P
 //const { Parser } = require('json2csv');
 const PDFDocument = require('pdfkit');
 const { sendEmail } = require('./nodemailer.js');
-
+const pluralize = require('pluralize');
 //create a new project post
 router.post("/create", async (req, res) => {
   try {
@@ -55,14 +55,23 @@ router.get("/", async (req, res) => {
   // Extracting the search query from the request
   const query = req.query;
   console.log("Received query:", query); // Debug: Log the received query
+
   try {
-    // Constructing a search filter based on the query
-    const searchFilter = {
-      project_name: { $regex: query.search, $options: "i" },
-    };
+    let searchFilter = {};
+
+    if (query.search) {
+      // Create a regex pattern to match both singular and plural forms
+      const pattern = new RegExp(`\\b(${query.search}|${pluralize.singular(query.search)}|${pluralize.plural(query.search)})\\b`, 'i');
+
+      searchFilter = {
+        title: { $regex: pattern }
+      };
+    }
+
     // Retrieving all posts, filtered by the search query if present
-    const projectposts = await Projectpost.find(query.search ? searchFilter : null);
+    const projectposts = await Projectpost.find(searchFilter);
     console.log("Filtered posts:", projectposts); // Debug: Log the filtered posts
+    
     // Sending a success response with the retrieved posts
     res.status(200).json(projectposts);
   } catch (err) {

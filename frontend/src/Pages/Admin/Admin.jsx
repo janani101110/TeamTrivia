@@ -69,7 +69,7 @@ export const Admin = () => {
         <div className="admin_griditem2">
           <Link to={"/projectsadmin/pending"}>
             <div className="admin_box">
-              Pending Approval <br />
+              Pending approval projects <br />
               <p className="countstyle">{animatedPendingProjectCount} </p>
             </div>
           </Link>
@@ -91,7 +91,7 @@ export const Admin = () => {
         <div className="admin_griditem4">
           <Link to={"/resourcesadmin/pending"}>
           <div className="admin_box">
-              Pending Resources <br></br>
+              Pending approval Resources <br></br>
               <p className="countstyle">{animatedPendingResourceCount} </p>
             </div>
           </Link>

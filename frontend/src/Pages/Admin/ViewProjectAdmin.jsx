@@ -13,8 +13,7 @@ import "aos/dist/aos.css";
 
 export const ViewProjectAdmin = () => {
   const { id } = useParams();
-  // const { state } = useLocation();
-  // const projectpost = state?.projectpost;
+  
   const [projectPost, setProjectPost] = useState({});
   const navigate = useNavigate();
   const containerRef = useRef(null); // Reference to the container
@@ -27,8 +26,7 @@ export const ViewProjectAdmin = () => {
     AOS.refreshHard(); // Refresh AOS on component mount/update
   }, [projectPost]);
 
-  //const projectpostId = useParams().id;
-  // const [projectpost, setprojectPost] = useState({});
+  
   const fetchproPost = async () => {
     try {
       const res = await axios.get(`${URL}/api/projectposts/${id}`);
@@ -85,46 +83,7 @@ export const ViewProjectAdmin = () => {
     }
   };
 
-  // const [posts, setPosts] = useState([]);
-
-  /* useEffect(() => {
-    if (projectpost) {
-      setProjectPost(projectpost);
-    } else {
-      fetchProjectPost();
-    }
-  }, [projectpost]);*/
-
-  /*useEffect(() => {
-    fetchProjectPost(id);
-  }, [id]);
-
-  const fetchProjectPost = async (id) => {
-    try {
-        const res = await axios.get(`${URL}/api/projectposts/${id}`);
-     
-      setProjectPost(res.data);
-    } catch (err) {
-      console.log(err);
-    }
-  };  */
-
-  /*      
-
-
-  } // Fetch posts
-   useEffect(() => {
-    axios
-      .get("/api/posts")
-      .then((response) => {
-        setPosts(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching posts: ", error);
-      });
-  }, []);
-
-*/
+  
 
 
   const renderButtons = () => {
@@ -177,21 +136,7 @@ export const ViewProjectAdmin = () => {
     setShowModal(true);
   };
 
- /* const submitRejection = () => {
-    axios
-      .post("/api/projects/reject", {
-        projectId: project._id,
-        reason: rejectionReason,
-      })
-      .then((response) => {
-        setShowModal(false);
-        // Handle successful rejection
-      })
-      .catch((error) => {
-        // Handle error
-      });
-  };*/
-
+ 
   const submitRejection = async () => {
     try {
       const url = `${URL}/api/projectposts/reject/${id}`;
@@ -252,18 +197,7 @@ export const ViewProjectAdmin = () => {
           </div>
           <br></br>
           <br></br>
-          {/*  <div className="project_image">
-
-        {/*<video width="100%" controls autoPlay loop>
-       //   <source
-       //     src={projectpost.project_video}
-       //     type="video/mp4"
-       //   />
-// </video> 
-
-<Link to={projectPost.project_video} >
-  click mee
-</Link>*/}
+          
           <div className="project_head" data-aos="fade-up">
             Video explanation of the project
           </div>
@@ -283,19 +217,7 @@ export const ViewProjectAdmin = () => {
           </div>
           <br></br>
           <br></br>
-          {/* <div className="project_image">
-        <img
-          src={projectPost.circuit_diagram}
-          alt="ProjectImage"
-          width={600}
-        ></img>
-        <p className="project_figure">Circuit Diagram</p>
-      </div>
-
-      <div className="project_image">
-        <img src={projectPost.pcb_design} alt="ProjectImage" width={600}></img>
-        <p className="project_figure">PCB Design</p>
-      </div> */}
+          
           <div className="project_head" data-aos="fade-up">
             Circuit Diagram
           </div>

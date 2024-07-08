@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import {Link, useLocation } from "react-router-dom";
 import "../Sensors.css";
@@ -137,3 +136,8 @@ const Pagination = ({ postsPerPage, totalPosts, paginate }) => {
     </nav>
   );
 };
+
+
+
+
+

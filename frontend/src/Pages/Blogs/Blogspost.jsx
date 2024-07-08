@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import "./Blogspost.css";
 import axios from "axios";
-import { Link, useNavigate, useLocation } from "react-router-dom";import CIcon from "@coreui/icons-react";
-import * as icon from "@coreui/icons";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+
+import * as icon from "@coreui/icons"; 
+import CIcon from "@coreui/icons-react";
 import { useUsers } from "../../Context/UserContext";
 import ShareBox from './ShareBox';
 import { formatDistanceToNow, format } from 'date-fns';
@@ -19,9 +21,9 @@ const Blogspost = ({ blogPost }) => {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [comments, setComments] = useState([]);
   const [showShareBox, setShowShareBox] = useState(false);
-const [shareUrl, setShareUrl] = useState('');
   const navigate = useNavigate();
 
+  const shareUrl = `http://localhost:3000/InsidePost/${blogPost._id}`;
   const location = useLocation();
 
   useEffect(() => {
@@ -184,9 +186,10 @@ const [shareUrl, setShareUrl] = useState('');
     setShowShareBox(!showShareBox);
   };
 
+  console.log(shareUrl);
 
   return (
-    <div className="mainBlogpostcard">
+    <div className="mainBlogpostcard"style={{width: '380px' }}>
       <div className="BlogpostCard">
         {/* Link to view full blog post */}
         <Link
@@ -219,6 +222,7 @@ const [shareUrl, setShareUrl] = useState('');
                 src={author.profilePicture}
                 alt=""
                 className="authorProfilePicture"
+                style={{ height: '40px', width: '40px', borderRadius: '50%' }}
               />
               <p className="authorUsername"> {author.username} </p>
             </div>
@@ -276,7 +280,7 @@ const [shareUrl, setShareUrl] = useState('');
       className="BlogFooteMarkIcon"
     />
   </button>
-  {showShareBox && <ShareBox postUrl={blogPost.url} onClose={toggleShareBox} />}
+  {showShareBox && (<ShareBox postUrl={shareUrl} onClose={toggleShareBox} />)}
 </div>
 
 

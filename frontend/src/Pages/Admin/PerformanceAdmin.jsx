@@ -100,7 +100,6 @@ const EnrollmentReport = ({ enrollments }) => (
 
 const PerformanceAdmin = () => {
   const [projects, setProjects] = useState([]);
-  const [resourcePosts, setResourcePosts] = useState([]);
   const [filters, setFilters] = useState({
     action: "",
     topic: "",
@@ -118,9 +117,9 @@ const PerformanceAdmin = () => {
   const fetchEnrollments = async () => {
     try {
       let url = `${URL}/api/projectposts`;
-      if (filters.topic === "resources") {
+    /*  if (filters.topic === "resources") {
         url = `${URL}/api/resoposts`;
-      } 
+      } */
 
       const response = await axios.get(url, { params: filters });
       const filteredEnrollments = response.data.filter((post) => {
@@ -137,9 +136,9 @@ const PerformanceAdmin = () => {
       });
       if (filters.topic === "projects") {
         setProjects(filteredEnrollments);
-      } else if (filters.topic === "resources") {
+      }/* else if (filters.topic === "resources") {
         setResourcePosts(filteredEnrollments);
-      }
+      }*/
       setEnrollments(filteredEnrollments);
     } catch (error) {
       console.error("Error fetching enrollments:", error);
@@ -258,7 +257,6 @@ const PerformanceAdmin = () => {
               >
                 <option value="">Select Topic</option>
                 <option value="projects">Projects</option>
-                <option value="resources">Resources</option>
               </select>
             </label>
           </div>

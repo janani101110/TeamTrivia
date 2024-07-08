@@ -2,10 +2,12 @@ import React, { useState,useRef,useEffect } from 'react';
 import axios from 'axios';
 import CIcon from "@coreui/icons-react";
 import * as icon from "@coreui/icons";
-
+import { Link } from 'react-router-dom';
+import { useNavigate } from "react-router-dom"; 
 const QuestionCard = ({ question, onDelete }) => {
   const hasIncrementedView = useRef(false);
   const [author, setAuthor] = useState(null);
+  const navigate = useNavigate();
 
   const fetchUserData = async (userId) => {
     try {
@@ -83,12 +85,17 @@ const QuestionCard = ({ question, onDelete }) => {
     const confirmation = window.confirm("Are you sure you want to delete the post?");
     if (confirmation) {
       onDelete(question._id);
+      navigate('/MyQuestions')
     }
   };
 
   return (
     <div onClick={handleCardClick} className='cardBox' style={{ border: '1px solid', marginBottom: '15px', padding: '20px', borderRadius: '25px', boxShadow: '2px 2px 2px' }}>
-
+<Link
+            key={question._id}
+            style={{ textDecoration: 'none' }} 
+            to={`/viewquestion/${question._id}`}
+          >
       <div>
         <div style={{ fontSize: 20, fontWeight: 'bold', color: '#101318', marginBottom: '5px' }}>
           {question.title}
@@ -104,7 +111,7 @@ const QuestionCard = ({ question, onDelete }) => {
           <div style={{ fontSize: 14, fontWeight: '400', color: '#7E8597', marginLeft: '15px' }} className="postedtime">{formatDate(question.date)}</div>
         </div>
         
-      </div>
+      </div></Link> 
       <div style={{ marginBottom: '15px' }}>
         <div style={{ fontSize: 16, fontWeight: '400', color: '#5C677D', height: '50px', overflow: 'hidden' }}>{question.description}</div>
       </div>
@@ -119,6 +126,7 @@ const QuestionCard = ({ question, onDelete }) => {
               />
       </button>
       </div>
+      
     </div>
   );
 };

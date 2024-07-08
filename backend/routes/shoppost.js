@@ -4,12 +4,12 @@ const router = express.Router();
 const Shoppost = require("../models/Shoppost");
 const cron = require('node-cron');
 const nodemailer = require('nodemailer'); 
-  
+const pluralize = require('pluralize');
  
  
 const scheduleEmail = (shoppost) => {
   const emailTime = new Date(shoppost.createdAt);
-  emailTime.getDate(emailTime.getDate() + 5);  // Add 5 days to the createdAt date
+  emailTime.setMinutes(emailTime.getMinutes() + 1);  // Add 5 days to the createdAt date
 
   // Ensure the minutes and hours are two digits for cron format
   const cronMinutes = emailTime.getMinutes().toString().padStart(2, '0');
@@ -88,14 +88,24 @@ router.route("/create").post((req, res) => {
 router.get("/", async (req, res) => {
   const query = req.query.search || "";
   try {
-    const searchFilter = { name: { $regex: query, $options: "i" } };
-    const shopPosts = await Shoppost.find(query ? searchFilter : {});
+    let searchFilter = {};
+
+    if (query) {
+      // Create a regex pattern to match both singular and plural forms
+      const pattern = new RegExp(`\\b(${query}|${pluralize.singular(query)}|${pluralize.plural(query)})\\b`, 'i');
+
+      searchFilter = {
+        name: { $regex: pattern }
+      };
+    }
+
+    // Retrieving all shop posts, filtered by the search query if present
+    const shopPosts = await Shoppost.find(searchFilter);
     res.status(200).json({ data: shopPosts });
   } catch (err) {
     res.status(500).json({ error: "An error occurred while fetching shop posts" });
   }
 });
-
 
 
 router.get("/getpost/:id", async (req, res) => {

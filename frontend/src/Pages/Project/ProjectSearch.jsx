@@ -71,7 +71,7 @@ export const ProjectSearch = ({ defaultValue = "" }) => {
   style={{
     position: 'absolute',
     display: 'flex',
-    marginTop:'35px',
+    marginTop:'55px',
     left: '35%',
     height: '30px',
     width: '300px',

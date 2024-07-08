@@ -34,7 +34,7 @@ const DatasheetCard = ({ resoPost, onDelete }) => {
   };
 
   return (
-    <div className="datasheet-card">
+    <div className="datasheet-card" s>
        <div className="resuserdetails">
           {author && (
             <div className="authorInfo">

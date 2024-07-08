@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -35,14 +34,14 @@ const ViewResourceAdmin = () => {
       setShowModal(true);
       return;
     }
-  
+ 
     const confirmMessage = `Are you sure you want to approve this resource?`;
     const isConfirmed = window.confirm(confirmMessage);
-  
+ 
     if (!isConfirmed) {
       return; // User clicked "Cancel", stop further execution
     }
-  
+ 
     try {
       const url = `${URL}/api/resoposts/${approvedStatus ? 'approve' : 'reject'}/${id}`;
       await axios.put(url, approvedStatus ? {} : { reason: rejectionReason });

@@ -1,7 +1,9 @@
+
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
 import Resourcepost from "../../Pages/Resources/Resourcepost";
+import Datasheetcard from "../../Pages/Resources/Sensors/datasheets/Datasheetcard";
 import "../../Pages/Resources/Sensors/Sensors.css";
 import { URL } from "../../url";
 import searchIcon from '../../Component/Assets/search.png'; // Importing the search icon image
@@ -66,7 +68,7 @@ export const ResoSearch = ({ defaultValue = "" }) => {
   return (
     <div className="sensorsCollect">
       <div className="reso-content-container">
-      <div className="ResoSearchDiv" style={{marginTop:'25px',boxShadow:'0 0 10px grey',position:'absolute'}}>
+      <div className="ResopageSearchDiv" style={{marginTop:'25px',boxShadow:'0 0 10px grey',position:'absolute'}}>
           <input
             type="text"
             className="searchBar" // CSS class for the search bar input
@@ -81,20 +83,26 @@ export const ResoSearch = ({ defaultValue = "" }) => {
             alt="Search Icon" // Alt text for the search icon image
           />
         </div>
-
+        <br/>
+<div className="resoresults">
         {searchInitiated && (
-          <div className="res-posts-container"style={{marginTop:'60px'}}>
+          <div className="res-posts-container">
             {!noResults ? (
               <>
-                {currentResoPosts.map((resoPost) => (
-                  <Resourcepost key={resoPost.id} resoPost={resoPost} />
-                ))}
+                {currentResoPosts.map((resoPost) => {
+                  if (resoPost.pdf) {
+                    return <Datasheetcard key={resoPost.id} resoPost={resoPost} />;
+                  } else {
+                    return <Resourcepost key={resoPost.id} resoPost={resoPost} />;
+                  }
+                })}
               </>
             ) : (
               <h3>No Posts Available</h3>
             )}
           </div>
         )}
+</div>
 
         {searchInitiated && !noResults && (resoPosts.length > 0) && (
           <Pagination
@@ -107,6 +115,7 @@ export const ResoSearch = ({ defaultValue = "" }) => {
     </div>
   );
 };
+
 
 const Pagination = ({ postsPerPage, totalPosts, paginate }) => {
   const pageNumbers = [];

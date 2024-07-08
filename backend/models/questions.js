@@ -8,7 +8,7 @@ const Questions = new mongoose.Schema(
             type:String, 
             required : true,
 
-        },
+        }, 
         description:{
             type:String,
             required : true,   
@@ -36,5 +36,3 @@ const Questions = new mongoose.Schema(
     }
 );
 module.exports=mongoose.model('questions',Questions);
-// const blogPost =mongoose.model('blogPost',blogPostSchema);
-// const question = mongoose.model('')

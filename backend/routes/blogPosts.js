@@ -3,7 +3,7 @@ const router=express.Router();
 const Post=require('../models/blogPost.js');
 const Bookmark = require('../models/Bookmark.js');
 const { sendEmail } = require('./nodemailer.js');
-
+const pluralize = require('pluralize');
 
 router.get('/popularBlogs', async (req, res) => {
   try {
@@ -90,30 +90,29 @@ router.get("/user/:userId", async (req, res) => {
     }
 })
 
-//Get All Posts with pagination route
-// router.get("/", async (req, res) => {
-//     try{
-
-//         // Fetch posts
-//         const posts = await Post.find();
-//         res.status(200).json(posts);
-//     }catch(err){
-//         res.status(500).json(err);
-//     }
-// })
+/
 // Route for retrieving all posts, optionally filtered by a search query
 router.get("/", async (req, res) => {
   // Extracting the search query from the request
   const query = req.query;
   console.log("Received query:", query); // Debug: Log the received query
+
   try {
-    // Constructing a search filter based on the query
-    const searchFilter = {
-      title: { $regex: query.search, $options: "i" },
-    };
+    let searchFilter = {};
+
+    if (query.search) {
+      // Create a regex pattern to match both singular and plural forms
+      const pattern = new RegExp(`\\b(${query.search}|${pluralize.singular(query.search)}|${pluralize.plural(query.search)})\\b`, 'i');
+
+      searchFilter = {
+        title: { $regex: pattern }
+      };
+    }
+
     // Retrieving all posts, filtered by the search query if present
-    const posts = await Post.find(query.search ? searchFilter : null);
+    const posts = await Post.find(searchFilter);
     console.log("Filtered posts:", posts); // Debug: Log the filtered posts
+    
     // Sending a success response with the retrieved posts
     res.status(200).json(posts);
   } catch (err) {

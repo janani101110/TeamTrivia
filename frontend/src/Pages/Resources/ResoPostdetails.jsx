@@ -171,7 +171,7 @@ export const ResoPostdetails = () => {
         })}
         {showAlert && (
           <Alert
-            message="Please login to rate this post."
+            message="Please login ."
             onClose={handleAlertClose}
           />
         )}

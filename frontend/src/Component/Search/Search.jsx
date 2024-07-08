@@ -33,6 +33,7 @@ export const Search = ({ defaultValue = "" }) => {
         className="searchIcon" // CSS class for the search icon
         onClick={handleSearch} // Function to navigate based on the search query
         alt="Search Icon" // Alt text for the search icon image
+        
       />
     </div>
   );

@@ -1,8 +1,10 @@
+
 import React, { useState } from 'react';
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import LoginImage from "../LogIn/images/loginImage.jpg";
 import GoogleIcon from "../LogIn/images/googleIcon.png";
+import gaveshaLogo from "../LogIn/images/logo.png";
 import Alert from "../../Component/Alert/Alert";  // Import the Alert component
 
 const Signup = () => {
@@ -105,6 +107,7 @@ const Signup = () => {
           <div className="loginText">  Have an Account? </div>
           <Link to="/login" style={{textDecoration: 'none'}} className="loginLink"> Signin </Link>
         </div>
+        <div className="loginText"> Powered By :  <img src={gaveshaLogo} className="loginLogo" alt="Logo of gavesha labs"/> </div>
       </div>
     </div>
   );

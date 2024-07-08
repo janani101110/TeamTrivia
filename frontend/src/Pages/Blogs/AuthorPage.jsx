@@ -58,7 +58,7 @@ const AuthorPage = () => {
                 </div>
                 <div className="AuthorProfilePicture">
                     {author && (
-                        <img src={author.profilePicture} alt={`${author.username}`} className="AuthorImage" />
+                        <img src={author.profilePicture} alt={`${author.username}`} className="AuthorImage" style={{ height: '80px', width: '80px', borderRadius: '50%' }}/>
                     )}
                 </div>
             </div>

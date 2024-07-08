@@ -12,7 +12,6 @@ import 'react-quill/dist/quill.snow.css';
 
 const categoriesList = {
   "Data Sheets": [
-    "All Categories",
     "Sensor Data Sheets",
     "Microcontroller Data Sheets",
     "Communication Module Data Sheets",
@@ -29,6 +28,8 @@ export const DataSheetWrite = () => {
   const [pdfFile, setPdfFile] = useState(null); // State for PDF file
   const navigate = useNavigate();
   const { user } = useUsers();
+  const [agree, setAgree] = useState(false); // Add state for the "I agree" checkbox
+
 
   useEffect(() => {
     if (user) {
@@ -66,7 +67,19 @@ export const DataSheetWrite = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Validate form fields
+    if (!title.trim() || cats.length === 0 || !pdfFile) {
+      alert("All fields are required.");
+      return;
+    }   
   
+    // Validate "I agree" checkbox
+    if (!agree) {
+      alert("You need to agree to the terms before submitting.");
+      return;
+    }
+
     let pdfUrl = null;
   
     if (pdfFile) {
@@ -83,7 +96,6 @@ export const DataSheetWrite = () => {
       title,
       maincategories: maincats,
       categories: cats,
-      desc: "Data Sheets",
       pdf: pdfUrl,
       postedBy: postedBy,
     };
@@ -92,10 +104,11 @@ export const DataSheetWrite = () => {
       const res = await axios.post(`${URL}/api/resoposts/create`, resoPost, {
         withCredentials: true,
       });
-      console.log('Response:', res.data);
-      navigate("/resources");
+      console.log(res.data);
+      alert("Your data sheet has been submitted successfully");
+      navigate("/datasheet");
     } catch (err) {
-      console.log('Error:', err.response ? err.response.data : err.message);
+      console.log(err);
     }
   };
   
@@ -103,6 +116,24 @@ export const DataSheetWrite = () => {
   return (
     <div className="container">
       <h1 className="title">Share Your Knowledge...!</h1>
+
+      <div className="resorestrict">
+        <p>
+          You can upload Data Sheets directly using this form. Please be mindful to post only standard information. 
+          The admin will verify your post before it gets displayed on the website. Please check your email for 
+          the verification email after posting.
+        </p>
+        <input
+          type="checkbox"
+          name="agree"
+          id=""
+          className="agree"
+          checked={agree}
+          onChange={(e) => setAgree(e.target.checked)} // Handle checkbox change
+        />{" "}
+        I agree
+      </div>
+
       <form onSubmit={handleSubmit} className="form">
         <input
           onChange={(e) => setTitle(e.target.value)}
@@ -144,6 +175,7 @@ export const DataSheetWrite = () => {
           </div>
         </div>
 
+        <h3>Upload data sheet pdf:</h3>
         <input onChange={handlePdfChange} type="file" accept="application/pdf" className="file-input" />
 
         <button type="submit" className="publish-btn">

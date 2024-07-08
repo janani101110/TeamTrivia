@@ -83,7 +83,7 @@ export const BlogComment = ({ c, fetchBlogComments }) => {
     <div className="blog-comment">
       <div className="comment-header">
         <div className="comment-user">
-          <img src={author.profilePicture} alt="" className="authorProfilePicture" />
+          <img src={author.profilePicture} alt="" className="authorProfilePicture" style={{ height: '40px', width: '40px', borderRadius: '50%' }}/>
           <h5>{author.username}</h5>
           <h6>
             {createdAtDate > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)

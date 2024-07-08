@@ -97,6 +97,7 @@ const Resourcepost = ({ resoPost }) => {
   };
   return (
     <div className="res-post">
+      <div>
       <Link to={`/resopostdetails/${resoPost._id}`}>
         <div className="respostimg">
           <img src={resoPost.photo} alt={resoPost.title} className="res-post-img" />
@@ -124,7 +125,7 @@ const Resourcepost = ({ resoPost }) => {
         </div>
 
         </Link>
-
+        </div>
         <div className="postfooter">
         <div className="bookmarkWrapper">
             <button className="BlogFooterkButton" onClick={handleBookmark}>

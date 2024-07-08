@@ -7,7 +7,7 @@ import CIcon from "@coreui/icons-react";
 import * as icon from "@coreui/icons";
 import { BlogComment } from "./BlogComment";
 import Alert from "../../Component/Alert/Alert";
-
+import Notification from './BlogNotification';
 const URL = "http://localhost:5000"; // Define your base URL here
 
 const fetchUserData = async (userId) => {
@@ -22,11 +22,14 @@ const fetchUserData = async (userId) => {
 
 export const InsidePost = () => {
   const { id: blogPostId } = useParams();
-  const [blogPost, setBlogPost] = useState({});
-  const [author, setAuthor] = useState(null);
+  const [blogPost, setBlogPost] = useState({ likes: [] });
+    const [author, setAuthor] = useState(null);
   const { user } = useUsers();
   const [likes, setLikes] = useState(0);
   const [liked, setLiked] = useState(false);
+  const [unLiked, setUnLiked] = useState(false);
+  const [showNotification, setShowNotification] = useState(false);
+  const [notificationMessage, setNotificationMessage] = useState('');
   const [comments, setComments] = useState([]);
   const [comment, setComment] = useState("");
   const [showAlert, setShowAlert] = useState(false);
@@ -60,13 +63,23 @@ export const InsidePost = () => {
         );
         setLikes(likes + 1);
         setLiked(true);
-        
+        setUnLiked(false);
+        setNotificationMessage('Liked successfully!');
+        setShowNotification(true);
+        setTimeout(() => setShowNotification(false), 3000);
+
       } catch (error) {
         console.error("Error liking post:", error);
       }
     } else {
-      setShowAlert(true);
-      return;
+      setTimeout(() => {
+        const scrollPosition = window.scrollY;
+        window.alert("Please login to like the post.");
+      }, 100);
+      setTimeout(() => {
+        const scrollPosition = window.scrollY;
+        navigate("/login", { state: { from: location, scrollPosition } });
+      }, 2000);
     }
   };
 
@@ -79,13 +92,23 @@ export const InsidePost = () => {
         );
         setLikes(likes - 1);
         setLiked(false);
+        setUnLiked(true);
+        setNotificationMessage('Unliked successfully!');
+        setShowNotification(true);
+        setTimeout(() => setShowNotification(false), 3000);
         
       } catch (error) {
         console.error("Error unliking post:", error);
       }
     } else {
-      setShowAlert(true);
-      return;
+      setTimeout(() => {
+        const scrollPosition = window.scrollY;
+        window.alert("Please login to unlike the post.");
+      }, 100);
+      setTimeout(() => {
+        const scrollPosition = window.scrollY;
+        navigate("/login", { state: { from: location, scrollPosition } });
+      }, 2000);
     }
   };
 
@@ -103,6 +126,11 @@ export const InsidePost = () => {
     fetchPost();
     fetchBlogComments();
   }, [blogPostId]);
+  useEffect(() => {
+    if (blogPost.likes) {
+      setLikes(blogPost.likes.length);
+    }
+  }, [blogPost]);
 
   const postComment = async (e) => {
     e.preventDefault();
@@ -196,15 +224,15 @@ export const InsidePost = () => {
         <CIcon
           icon={icon.cilThumbUp}
           size=""
-          style={{ "--ci-primary-color": "black" }}
+          style={{ color: liked ? "purple" : "black" }}
           onClick={handleLike}
           className="insideBlogLike"
         />
         <CIcon
           icon={icon.cilThumbDown}
           size=""
-          style={{ "--ci-primary-color": "black" }}
-          onClick={handleUnlike}
+          style={{ color: unLiked ? "purple" : "black" }}     
+               onClick={handleUnlike}
           className="insideBlogLike"
         />
       </div>

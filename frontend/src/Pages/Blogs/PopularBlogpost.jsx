@@ -210,6 +210,7 @@ const BlogPostCard = ({ blogPost }) => {
                       src={author.profilePicture}
                       alt=""
                       className="authorProfilePicture"
+                      style={{ height: '40px', width: '40px', borderRadius: '50%' }}
                     />
                     <p className="authorUsername"> {author.username} </p>
                   </div>

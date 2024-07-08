@@ -6,7 +6,7 @@ import "./QuestionCard.css";
 const QuestionCard = ({ question }) => {
   const hasIncrementedView = useRef(false);
   const [author, setAuthor] = useState(null);
-
+ 
   const fetchUserData = async (userId) => {
     try {
       const response = await fetch(
@@ -101,7 +101,6 @@ const QuestionCard = ({ question }) => {
       </div>
       <div className="info">
         <div>Views {Math.floor(question.viewCount)}</div>
-        {/* <div style={{ fontSize: 14, fontWeight: '400', color: '#7E8597' }}>Replies</div> */}
       </div>
     </div>
   );

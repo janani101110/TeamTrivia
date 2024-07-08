@@ -130,7 +130,10 @@ export const Writepost = () => {
 
   const handleSubmit = async (e) => { 
     e.preventDefault();
-    
+    if (!title.trim() || !desc.trim() || cats.length === 0 || !file) {
+      alert("All fields are required.");
+      return;
+    }
     if (!agree) {
       setAlertMessage("You must agree to the terms and conditions.");
       setShowAlert(true);
@@ -159,7 +162,7 @@ export const Writepost = () => {
     };
 
     try {
-      const res = await axios.post(URL + "/api/resoposts/create", resoPost, {
+      const res = await axios.post(`${URL}/api/resoposts/create`, resoPost, {
         withCredentials: true,
       });
       console.log(res.data);
@@ -192,6 +195,7 @@ export const Writepost = () => {
           type="checkbox"
           name="agree"
           id="agree"
+          checked={agree}
           className="agree"
           onChange={(e) => setAgree(e.target.checked)}
           required
@@ -259,7 +263,7 @@ export const Writepost = () => {
             toolbar: [
               [{ 'header': '1'}, {'header': '2'}, { 'font': [] }],
               [{size: []}],
-              ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+              ['bold', 'italic', 'blockquote'],
               [{'list': 'ordered'}, {'list': 'bullet'}],
               ['link', 'image'],
               ['clean']
