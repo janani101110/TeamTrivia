@@ -4,6 +4,8 @@ import axios from "axios";
 import { URL } from "../../url";
 import AdminNavi from "./AdminNavi";
 import "./ViewProjectAdmin.css";
+import ReactQuill from "react-quill"; // Import ReactQuill for rendering
+
 
 const ViewResourceAdmin = () => {
   const { id } = useParams();
@@ -138,24 +140,33 @@ const ViewResourceAdmin = () => {
     <div>
       <AdminNavi />
       <div className="admin_content">
-        <div className="resource_seemore_container" data-aos="fade-up">
+        <div className="project_seemore_container" data-aos="fade-up">
           <h1 className="resource_title">{resoPost.title}</h1>
           <hr className="resource_line" />
           <br />
           <div className="resource_inline_user">
             <br />
             <div className="resopost-image" data-aos="fade-up">
+            <p className="resource_figure">Image</p>
               <img src={resoPost.photo} alt={resoPost.title} width={600} />
-              <p className="resource_figure">Image</p>
             </div>
           </div>
           <br />
           <div data-aos="fade-up">
             <p className="resource_head">Explanation of the resource:</p>
             <br />
-            <p className="resource_describe">{resoPost.desc}</p>
-          </div>
+            <ReactQuill value={resoPost.desc} readOnly={true} theme="bubble" />
+            </div>
           <br />
+          <div>
+            <p className="resource_head">Category:</p>
+            <br />
+            <div>
+          {resoPost.categories?.map((c, i) => (
+            <div key={i}>{c}</div>
+          ))}
+        </div>
+          </div>
           <br />
           <div className="button_flex">{renderButtons()}</div>
           {showModal && (

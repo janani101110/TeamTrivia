@@ -87,6 +87,11 @@ html {
   font-size: large;
   text-align: justify;
   white-space: pre-line;
+  white-space: normal;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
 }
 
 .project_github {
@@ -162,10 +167,7 @@ html {
   box-sizing: border-box;
 }
 
-/* Alert message style */
-.Alert {
-  /* Define your alert styling here */
-}
+
 
 /* Media queries for responsiveness */
 @media screen and (max-width: 1200px) {

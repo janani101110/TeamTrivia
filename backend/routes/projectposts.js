@@ -64,7 +64,7 @@ router.get("/", async (req, res) => {
       const pattern = new RegExp(`\\b(${query.search}|${pluralize.singular(query.search)}|${pluralize.plural(query.search)})\\b`, 'i');
 
       searchFilter = {
-        title: { $regex: pattern }
+        project_name: { $regex: pattern }
       };
     }
 

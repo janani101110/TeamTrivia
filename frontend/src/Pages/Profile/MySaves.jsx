@@ -3,9 +3,11 @@ import axios from "axios";
 import { useUsers } from "../../Context/UserContext";
 import Blogspost from "../Blogs/Blogspost";
 import Resopost from "../Resources/Resourcepost";
+import Datasheet from "../Resources/Sensors/datasheets/Datasheetcard";
 import CIcon from "@coreui/icons-react";
 import * as icon from "@coreui/icons";
 import "./MySaves.css";
+import "../Resources/Sensors/Sensors.css";
 import "../Blogs/Blog.css";
 import bookMarkBanner from "./Assets/bookMarkBanner.jpg";
 
@@ -13,6 +15,7 @@ const MySaves = () => {
   const [blogPosts, setBlogPosts] = useState([]);
   const [resoPosts, setResoPosts] = useState([]);
   const [showGrid, setShowGrid] = useState(false); // State to track whether to show grid view
+  const [showResoGrid, setShowResoGrid] = useState(false);
   const { user } = useUsers();
 
   useEffect(() => {
@@ -36,13 +39,17 @@ const MySaves = () => {
       } catch (error) {
         console.error("Error fetching bookmarked posts:", error);
       }
-    }; 
+    };
 
     fetchBookmarkedPosts();
   }, [user]);
 
   const handleToggleGrid = () => {
     setShowGrid(!showGrid); // Toggle the state when dropdown button is clicked
+  };
+
+  const handleToggleResoGrid = () => {
+    setShowResoGrid(!showResoGrid);
   };
 
   return (
@@ -104,60 +111,85 @@ const MySaves = () => {
             </ul>
           )}
         </div>
-        <div className="mySaveBookMarksresoDiv">
-        <div className="mySaveBookMarksresoSubDiv">
-          <div className="mySaveTags">
-            Resources <hr />
-            <button onClick={handleToggleGrid} className="toggleButton">
-              {showGrid ? (
-                <CIcon
-                  icon={icon.cilCaretTop}
-                  size=""
-                  style={{ "--ci-primary-color": "black" }}
-                  className="dropdownIcon"
-                />
-              ) : (
-                <CIcon
-                  icon={icon.cilCaretBottom}
-                  size=""
-                  style={{ "--ci-primary-color": "black" }}
-                  className="dropdownIcon"
-                />
-              )}
-            </button>
-          </div>
-          <p className="UserBlogsCount">
-            No of Resources: {resoPosts.length}
-          </p>
+
+        <div
+      className="mySaveBookMarksresoDiv"
+      style={{
+        width: '3200px',
+        overflowX: 'hidden',
+        marginTop: '15px',
+      }}
+    >
+      <div className="mySaveBookMarksresoSubDiv">
+        <div className="mySaveTags" style={{ display: 'flex', alignItems: 'center', fontSize: '24px', marginLeft: '80px' }}>
+          Resources
+          {"   "}
+          <button
+            onClick={handleToggleResoGrid}
+            className="toggleButton"
+            style={{
+              backgroundColor: '#fff',
+              border: 'none',
+              marginLeft: 'auto',
+              marginRight: '50px',
+            }}
+          >
+            {showResoGrid ? (
+              <CIcon
+                icon={icon.cilCaretTop}
+                size=""
+                style={{ "--ci-primary-color": "black", width: '20px' }}
+                className="dropdownIcon"
+              />
+            ) : (
+              <CIcon
+                icon={icon.cilCaretBottom}
+                size=""
+                style={{ "--ci-primary-color": "black", width: '20px' }}
+                className="dropdownIcon"
+              />
+            )}
+          </button>
         </div>
-        <div className="resoCardMyBookMarks">
-          {resoPosts.length === 0 ? (
-            <p>No saved resource posts found.</p>
-          ) : (
-            <ul>
-              {/* Conditionally render the first three resource posts or all resource posts */}
-              {showGrid
-                ? resoPosts.map((resoPost) => (
-                    <Resopost
-                      style={{ textDecoration: "none" }}
-                      key={resoPost._id}
-                      resoPost={resoPost}
-                    />
-                  ))
-                : resoPosts
-                    .slice(0, 3)
-                    .map((resoPost) => (
-                      <Resopost
-                        style={{ textDecoration: "none" }}
-                        key={resoPost._id}
-                        resoPost={resoPost}
-                      />
-                    ))}
-            </ul>
-          )}
-        </div>
+        <p className="UserCount" style={{ fontSize: '16px', marginBottom: '5px', marginLeft: '80px' }}>
+          {" "}
+          No of Resources: {"   "} {resoPosts.length}{" "}
+        </p>
       </div>
+
+      <div>
+      {resoPosts.length === 0 ? (
+        <p>No saved resource posts found.</p>
+      ) : (
+        <ul
+          style={{
+            marginLeft: '100px',
+            display: 'flex',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+            gridGap: '5px',
+            marginTop: '35px',
+          }}
+        >
+          {resoPosts.length > 0 ? (
+            resoPosts.map((post) => {
+              if (post.photo && post.desc) {
+                return (
+                  <Resopost key={post._id} resoPost={post} />
+                );
+              } else if (post.pdf) {
+                return <Datasheet key={post._id} resoPost={post} />;
+              } else {
+                return <p key={post._id}>Unknown post type</p>;
+              }
+            })
+          ) : (
+            <p>No posts available.</p>
+          )}
+        </ul>
+      )}
     </div>
+    </div>
+      </div>
     </div>
   );
 };

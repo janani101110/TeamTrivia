@@ -251,7 +251,7 @@ export const Writepost = () => {
             ))}
           </div>
         </div>
-
+<h3>Cover Image:</h3>
         <input onChange={handlePhotoChange} type="file" className="file-input" />
 
         <ReactQuill

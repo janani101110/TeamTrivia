@@ -138,7 +138,7 @@ const Resourcepost = ({ resoPost }) => {
             </button>
             {showAlert && (
             <Alert
-              message="Please login to create a post."
+              message="Please login ."
               onClose={handleAlertClose}
             />
           )}
